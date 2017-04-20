@@ -122,6 +122,7 @@ void GlutApp::mouseCB(int b, int s, int x, int y){
         else {
             // Left up
             app->mouseUp(mx, my);
+
         }
     }
     else {

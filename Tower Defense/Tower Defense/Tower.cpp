@@ -23,7 +23,7 @@ void Tower::Draw(std::vector<Tower>& tower)
 {
 	for (int i = 0; i < tower.size(); i++)
 	{
-		glColor3f(0.0f, 0.0f, 0.0f);
+		//glColor3f(0.75f, 0.75f, 0.75f);
 
 		glBegin(GL_QUADS);
 

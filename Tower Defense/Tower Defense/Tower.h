@@ -6,18 +6,18 @@
 class Tower
 {
 public:
+	float x, y;
+
+public:
 
 	Tower();
-	Tower(float x, float y);
 	~Tower();
+	Tower(float x, float y);
 
 	void Draw(std::vector<Tower>& tower);
 	bool Contains(float x, float y, std::vector<Tower>& tower);
 	bool InBounds(float y);
 	void DeleteTower(float x, float y, std::vector<Tower>& tower);
-
-	float x, y;
-	
 
 };
 
