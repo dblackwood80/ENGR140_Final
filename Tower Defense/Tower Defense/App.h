@@ -10,7 +10,8 @@ class App: public GlutApp {
     float mx;
     float my;
 public:
-    // Constructor, to initialize state
+	void initializeLevel(std::string filename);
+	// Constructor, to initialize state
     App(const char* label, int x, int y, int w, int h);
     
     // These are the events we want to handle

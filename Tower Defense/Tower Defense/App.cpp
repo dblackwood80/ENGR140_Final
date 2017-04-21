@@ -1,14 +1,17 @@
 #include "App.h"
 #include "Tower.h"
 #include "CreateButton.h"
+#include <fstream>
 
 Tower towers;
 CreateButton button;
-
+float change = 0, tempChange = 0;
 std::vector<Tower> towerVec;
 std::vector<CreateButton> buttons;
 
 bool loopDone = false;
+
+std::ifstream level;
 
 enum Menu {Main = 0, Options = 1, LevelSelect = 2, Play = 3};
 
@@ -17,17 +20,54 @@ Menu currentMenu = Main;
 float tileWidth = 0.18f, tileHeight = 0.18f;
 //int offsetW = 1, offsetH = 1;
 
+//std::vector<std::vector<int> > map(9, std::vector<int> (11));
+
 int map[9][11] = { //our map
 	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 	{ 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 },
-	{ 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1 },
-	{ 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1 },
-	{ 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1 },
+	{ 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1 },
+	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1 },
 };
+
+void App::initializeLevel(std::string filename)
+{
+	/*level.open("Levels/" + filename);
+
+	if (level.is_open())
+	{
+		std::cout << "opened" << std::endl;
+	}
+
+	while (level.good())
+	{
+		for (int i = 0; i < 11; i++)
+		{
+			for (int j = 0; j < 9; j++)
+			{
+				level >> map[i][j];
+				std::cout << map[j][i];
+			}
+			std::cout << std::endl;
+		}
+	}
+
+	level.close();
+	std::cout << "done" << std::endl;
+
+	for (int k = 0; k < 11; k++)
+	{
+		for (int l = 0; l < 9; l++)
+		{
+			std::cout << map[k][l];
+		}
+		std::cout << std::endl;
+	}*/
+}
 
 App::App(const char* label, int x, int y, int w, int h): GlutApp(label, x, y, w, h){
     // Initialize state variables
@@ -77,18 +117,18 @@ GLuint App::loadTexture(const char *filename) {
 void App::draw() {
 
     // Clear the screen
-   /* glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    // Set background color to black
-    glClearColor(1.0, 0.0, 0.0, 1.0);
+    // Set background color to white
+    glClearColor(1.0, 1.0, 1.0, 1.0);
 	
 	std::cout << currentMenu << std::endl;
     
     // Set up the transformations stack
     glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();*/
+    glLoadIdentity();
 
-	std::cout << currentMenu << std::endl;
+	//std::cout << currentMenu << std::endl;
     
 	if (currentMenu == Main)
 	{
@@ -182,8 +222,10 @@ void App::draw() {
 		glClearColor(1.0, 1.0, 1.0, 1.0);
 
 		// Set up the transformations stack
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
+		//glMatrixMode(GL_MODELVIEW);
+		//glLoadIdentity();
+
+		glPushMatrix();
 
 		// Set Color
 		glColor3d(1.0, 1.0, 1.0);
@@ -195,28 +237,52 @@ void App::draw() {
 		glEnable(GL_TEXTURE_2D);
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
+		//glMatrixMode(GL_MODELVIEW);
+		//glLoadIdentity();
+		std::cout << "change: " << change << std::endl;
+		if (change <= -0.545f)
+		{
+			tempChange = change;
+			//change = 0;
+			glTranslatef(-1.8f, change, 0.0f);
+			glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
+		}
+		else
+		{
+			glTranslatef(-1.8f, change, 0.0f);
+			glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
+		}
+		
 		glBegin(GL_QUADS);
 
 		glTexCoord2f(0.0, 0.0);
-		glVertex2f(0, 0);
+		glVertex2f(-1.0f, 0.98f);
 
 		glTexCoord2f(0.0, 1.0);
-		glVertex2f(0, 0 - tileHeight);
+		glVertex2f(-1.0f, 0.98f - tileHeight);
 
 		glTexCoord2f(1.0, 1.0);
-		glVertex2f(0 + tileWidth, 0 - tileHeight);
+		glVertex2f(-1.0f + tileWidth, 0.98f - tileHeight);
 
 		glTexCoord2f(1.0, 0.0);
-		glVertex2f(0 + tileWidth, 0);
-
+		glVertex2f(-1.0f + tileWidth, 0.98f);
 		glEnd();
+		glPopMatrix();
+
+
+		//glMatrixMode(GL_MODELVIEW);
+		//glLoadIdentity();
+
 		glDisable(GL_TEXTURE_2D);
+		//redraw();
 
 		for (int xTile = 1; xTile < 12; xTile++)
 		{
+			//std::cout << "done 1" << std::endl;
 			for (int yTile = 1; yTile < 10; yTile++)
 			{
-				if (map[yTile - 1][xTile - 1] == 1) //if grass
+				//std::cout << "done 2" << std::endl;
+				if (map[yTile - 1][xTile - 1] == 0) //if grass
 				{
 					//std::cout << map[yTile - 1][xTile - 1] << ", " << map[yTile][xTile] << ", " << yTile << ", " << xTile << std::endl;
 					glBindTexture(GL_TEXTURE_2D, grass);
@@ -224,7 +290,7 @@ void App::draw() {
 					//offsetH++;
 					//glDisable(GL_TEXTURE_2D);
 				}
-				else if (map[yTile - 1][xTile - 1] == 0) //else if path
+				else if (map[yTile - 1][xTile - 1] == 1) //else if path
 				{
 					//std::cout << map[yTile - 1][xTile - 1] << ", " << map[yTile - 1][xTile - 1] << std::endl;
 					glBindTexture(GL_TEXTURE_2D, path);
@@ -281,9 +347,10 @@ void App::mouseUp(float x, float y) //Left click button up
 	mx = x;
 	my = y;
 
-	if (button.Contains(mx, my, buttons))
+	if (button.Contains(mx, my, buttons) && currentMenu == Main)
 	{
 		currentMenu = Play;
+		initializeLevel("Level1.txt");
 	}
 
 	redraw();
@@ -303,4 +370,11 @@ void App::keyPress(unsigned char key) {
         // Exit the app when Esc key is pressed
         exit(0);
     }
+
+	if (key == 32)
+	{
+		change -= 0.005;
+		std::cout << "doing " << change << std::endl;
+		redraw();
+	}
 }
