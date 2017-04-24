@@ -1,17 +1,27 @@
 #include "App.h"
 #include "Tower.h"
+#include "Enemy.h"
 #include "CreateButton.h"
+#include "Level.h"
+#include "Vector2.h"
 #include <fstream>
+#include <chrono>
 
-Tower towers;
 CreateButton button;
-float change = 0, tempChange = 0;
+Enemy enemy1;
+Tower tower;
+
+Level levels(Vector2(-1.0f, 0.98f));
+typedef std::chrono::steady_clock Clock;
+int nodes = 0;
+
+float xChange = 0, yChange = 0;
 std::vector<Tower> towerVec;
 std::vector<CreateButton> buttons;
 
 bool loopDone = false;
 
-std::ifstream level;
+//std::ifstream level;
 
 enum Menu {Main = 0, Options = 1, LevelSelect = 2, Play = 3};
 
@@ -34,41 +44,6 @@ int map[9][11] = { //our map
 	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1 },
 };
 
-void App::initializeLevel(std::string filename)
-{
-	/*level.open("Levels/" + filename);
-
-	if (level.is_open())
-	{
-		std::cout << "opened" << std::endl;
-	}
-
-	while (level.good())
-	{
-		for (int i = 0; i < 11; i++)
-		{
-			for (int j = 0; j < 9; j++)
-			{
-				level >> map[i][j];
-				std::cout << map[j][i];
-			}
-			std::cout << std::endl;
-		}
-	}
-
-	level.close();
-	std::cout << "done" << std::endl;
-
-	for (int k = 0; k < 11; k++)
-	{
-		for (int l = 0; l < 9; l++)
-		{
-			std::cout << map[k][l];
-		}
-		std::cout << std::endl;
-	}*/
-}
-
 App::App(const char* label, int x, int y, int w, int h): GlutApp(label, x, y, w, h){
     // Initialize state variables
     mx = 0.0;
@@ -77,14 +52,54 @@ App::App(const char* label, int x, int y, int w, int h): GlutApp(label, x, y, w,
 	#if defined WIN32
     grass = loadTexture("Grass.bmp");
     path = loadTexture("Path.bmp");
-	enemy1 = loadTexture("Enemy1.bmp");
+	enemyTexture1 = loadTexture("Enemy1.bmp");
+	greenTower = loadTexture("Turret_Green.bmp");
 	#else
 	monalisa = loadTexture("monalisa.bmp");
 	wall = loadTexture("wall.bmp");
 	#endif
     
     //background = new TexRect(-1, 1, 2, 2);
-    painting = new TexRect(-1.0f, 0.98f, 0.174f, 0.174f); //top corner is (-1.0f, 0.98f) not -1, 1 so y goes from .98 to -.98
+    scene = new TexRect(-1.0f, 0.98f, 0.18f, 0.18f); //top corner is (-1.0f, 0.98f) not -1, 1 so y goes from .98 to -.98 //.18 used to be .174
+}
+
+void App::initializeLevel(std::string filename)
+{
+	enemy1.init(enemyTexture1, Vector2(-1.0f, 0.98f), 1000, 10, 0.003f);
+	enemy1.SetWaypoints(levels.Waypoints());
+	std::cout << "should be once" << levels.Waypoints().at(0).X << std::endl;
+//	towerVec.push_back(Tower(greenTower, Vector2(0.0f, 0.0f)));
+	/*level.open("Levels/" + filename);
+
+	if (level.is_open())
+	{
+	std::cout << "opened" << std::endl;
+	}
+
+	while (level.good())
+	{
+	for (int i = 0; i < 11; i++)
+	{
+	for (int j = 0; j < 9; j++)
+	{
+	level >> map[i][j];
+	std::cout << map[j][i];
+	}
+	std::cout << std::endl;
+	}
+	}
+
+	level.close();
+	std::cout << "done" << std::endl;
+
+	for (int k = 0; k < 11; k++)
+	{
+	for (int l = 0; l < 9; l++)
+	{
+	std::cout << map[k][l];
+	}
+	std::cout << std::endl;
+	}*/
 }
 
 
@@ -122,7 +137,7 @@ void App::draw() {
     // Set background color to white
     glClearColor(1.0, 1.0, 1.0, 1.0);
 	
-	std::cout << currentMenu << std::endl;
+	//std::cout << currentMenu << std::endl;
     
     // Set up the transformations stack
     glMatrixMode(GL_MODELVIEW);
@@ -229,52 +244,76 @@ void App::draw() {
 
 		// Set Color
 		glColor3d(1.0, 1.0, 1.0);
-
-		towers.Draw(towerVec);
-
-		glBindTexture(GL_TEXTURE_2D, enemy1);
-
-		glEnable(GL_TEXTURE_2D);
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-		//glMatrixMode(GL_MODELVIEW);
-		//glLoadIdentity();
-		std::cout << "change: " << change << std::endl;
-		if (change <= -0.545f)
-		{
-			tempChange = change;
-			//change = 0;
-			glTranslatef(-1.8f, change, 0.0f);
-			glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
-		}
-		else
-		{
-			glTranslatef(-1.8f, change, 0.0f);
-			glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
-		}
 		
-		glBegin(GL_QUADS);
 
-		glTexCoord2f(0.0, 0.0);
-		glVertex2f(-1.0f, 0.98f);
+		tower.Draw(towerVec);
+		/*glMatrixMode(GL_TEXTURE);
+		glLoadIdentity();
+		glTranslatef(0.5f, 0.5f, 0.0f);
+		glRotatef(tower.rotation, 0.0f, 0.0f, 1.0f);
+		glTranslatef(-0.5f, -0.5f, 0.0f);
+		glMatrixMode(GL_MODELVIEW);*/
 
-		glTexCoord2f(0.0, 1.0);
-		glVertex2f(-1.0f, 0.98f - tileHeight);
+		//Tower tower3(greenTower, Vector2().zeroVector());
 
-		glTexCoord2f(1.0, 1.0);
-		glVertex2f(-1.0f + tileWidth, 0.98f - tileHeight);
+		Clock::time_point t1 = Clock::now();
 
-		glTexCoord2f(1.0, 0.0);
-		glVertex2f(-1.0f + tileWidth, 0.98f);
-		glEnd();
-		glPopMatrix();
+		/*if (yChange <=0.54f)
+		{
+			yChange += 0.0005f;
+			std::cout << "ychange: " << yChange << std::endl;
+			enemy.drawEnemy(-1.0f + xChange, 0.98f - yChange);
+			redraw();
+		}*/
 
+		if (enemy1.alive)
+		{
+			enemy1.drawEnemy();
+			/*if (yChange < 0.535f)
+			{
+				yChange += enemy1.speed;
+				enemy1.drawEnemy(enemy1.position.X + xChange, enemy1.position.Y - yChange, enemyTexture1);
+				glMatrixMode(GL_TEXTURE);
+				glLoadIdentity();
+				glTranslatef(0.5f, 0.5f, 0.0f);
+				glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
+				glTranslatef(-0.5f, -0.5f, 0.0f);
+				glMatrixMode(GL_MODELVIEW);
+			}
+			else if (yChange >= 0.535f && xChange >= 0.0f && xChange <= 1.075f)
+			{
+				yChange = 0.540f;
+				xChange += enemy1.speed;
+				enemy1.drawEnemy(enemy1.position.X + xChange, enemy1.position.Y - yChange, enemyTexture1);
+				glMatrixMode(GL_TEXTURE);
+				glLoadIdentity();
+				glTranslatef(0.5f, 0.5f, 0.0f);
+				glRotatef(0.0f, 0.0f, 0.0f, 1.0f);
+				glTranslatef(-0.5f, -0.5f, 0.0f);
+				glMatrixMode(GL_MODELVIEW);
+			}
+			else if (yChange >= 0.540f && yChange <= 1.075f && xChange >= 1.075f)
+			{
+				yChange += enemy1.speed;
+				enemy1.drawEnemy(enemy1.position.X + xChange, enemy1.position.Y - yChange, enemyTexture1);
+				glMatrixMode(GL_TEXTURE);
+				glLoadIdentity();
+				glTranslatef(0.5f, 0.5f, 0.0f);
+				glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
+				glTranslatef(-0.5f, -0.5f, 0.0f);
+				glMatrixMode(GL_MODELVIEW);
+				//std::cout << "Current x and y changes: X: " << xChange << " Y: " << yChange << std::endl;
+			}
+			else if (yChange >= 1.075f && xChange <= 1.08f && xChange >= 0.5375f)
+			{
+				//xChange -= enemy.speed; 
+				enemy1.drawEnemy(enemy1.position.X + xChange, enemy1.position.Y - yChange, enemyTexture1);
+				//std::cout << "2 Current x and y changes: X: " << xChange << " Y: " << yChange << std::endl;
+			}*/
+			redraw();
+		}
 
-		//glMatrixMode(GL_MODELVIEW);
-		//glLoadIdentity();
-
-		glDisable(GL_TEXTURE_2D);
-		//redraw();
+		//std::cout << enemy.y << " the y value" << std::endl;
 
 		for (int xTile = 1; xTile < 12; xTile++)
 		{
@@ -284,17 +323,18 @@ void App::draw() {
 				//std::cout << "done 2" << std::endl;
 				if (map[yTile - 1][xTile - 1] == 0) //if grass
 				{
-					//std::cout << map[yTile - 1][xTile - 1] << ", " << map[yTile][xTile] << ", " << yTile << ", " << xTile << std::endl;
+					//std::cout << map[yTile - 1][xTile - 1] << ", " << tileWidth * xTile << ", " << tileHeight * yTile << std::endl;
 					glBindTexture(GL_TEXTURE_2D, grass);
-					painting->draw(tileWidth * xTile, tileHeight * yTile);
+					scene->draw(tileWidth * xTile, tileHeight * yTile);
 					//offsetH++;
 					//glDisable(GL_TEXTURE_2D);
 				}
 				else if (map[yTile - 1][xTile - 1] == 1) //else if path
 				{
 					//std::cout << map[yTile - 1][xTile - 1] << ", " << map[yTile - 1][xTile - 1] << std::endl;
+					//std::cout << map[yTile - 1][xTile - 1] << ", " << tileWidth * xTile << ", " << tileHeight * yTile << std::endl;
 					glBindTexture(GL_TEXTURE_2D, path);
-					painting->draw(tileWidth * xTile, tileHeight * yTile);
+					scene->draw(tileWidth * xTile, tileHeight * yTile);
 					//offsetH++;
 					//glDisable(GL_TEXTURE_2D);
 				}
@@ -321,11 +361,41 @@ void App::draw() {
 		}*/
 	}
 
-	
     // We have been drawing everything to the back buffer
     // Swap the buffers to see the result of what we drew
     glFlush();
     glutSwapBuffers();
+}
+
+void App::idle()
+{
+	if (enemy1.currentHealth <= 0 && currentMenu == Play)
+	{
+		enemy1.alive = false;
+	}
+	
+	if (currentMenu == Play)
+	{
+		enemy1.Updates();
+		tower.Updates();
+
+		if (tower.Target().center.X == NULL && nodes == 0)
+		{
+			nodes++;
+			std::vector<Enemy> enemies;
+			enemies.push_back(enemy1);
+			tower.GetEnemy(enemies);
+		}
+
+		if (enemy1.currentHealth > 0)
+		{
+			float healthPercentage = (float)enemy1.currentHealth / (float)enemy1.startHealth;
+
+			//enemy1.currentHealth -= 5.0f;
+			//std::cout << enemy1.currentHealth << " " << healthPercentage << std::endl;
+		}
+	}
+
 }
 
 void App::mouseDown(float x, float y){ //Left click button down
@@ -335,7 +405,8 @@ void App::mouseDown(float x, float y){ //Left click button down
 
 	if (currentMenu == Play)
 	{
-		towerVec.push_back(Tower(mx, my));
+		//towerVec.push_back(Tower(greenTower, Vector2(0.0f, 0.0f)));
+		towerVec.push_back(Tower(greenTower, Vector2(mx, my)));
 	}
     
     // Redraw the scene
@@ -347,7 +418,7 @@ void App::mouseUp(float x, float y) //Left click button up
 	mx = x;
 	my = y;
 
-	if (button.Contains(mx, my, buttons) && currentMenu == Main)
+	if (button.Contains(x, y, buttons) && currentMenu == Main)
 	{
 		currentMenu = Play;
 		initializeLevel("Level1.txt");
@@ -373,8 +444,25 @@ void App::keyPress(unsigned char key) {
 
 	if (key == 32)
 	{
-		change -= 0.005;
-		std::cout << "doing " << change << std::endl;
+		if (yChange < 0.535f)
+		{
+			yChange += .005f;
+		}
+		else if (yChange >= 0.535f && xChange >= 0.0f && xChange <= 1.075f)
+		{
+			xChange += .005f;
+		}
+		else if (yChange >= 0.535f && yChange <= 1.075f && xChange >= 1.075f)
+		{
+			yChange += .005f;
+		}
+		else if (yChange >= 1.075f && xChange >= 1.075f && xChange <= 1.0f)
+		{
+			xChange = 1.0f;
+		}
+		//1.085 1.080
+		redraw();
+		//std::cout << "doing " << xChange << ", " << yChange << std::endl;
 		redraw();
 	}
 }

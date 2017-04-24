@@ -16,6 +16,7 @@ public:
     
     // These are the events we want to handle
     void draw();
+	void idle();
     void keyPress(unsigned char key);
     void mouseDown(float x, float y);
 	void mouseUp(float x, float y);
@@ -25,12 +26,12 @@ public:
     GLuint loadTexture(const char* filename);
     
     GLuint grass;
-    GLuint path;
-	GLuint enemy1;
+	GLuint greenTower;
+    GLuint path;    
+	GLuint enemyTexture1;
     
-    
-    TexRect* painting;
-    TexRect* background;
+    TexRect* scene;
+    //TexRect* background;
 };
 
 #endif

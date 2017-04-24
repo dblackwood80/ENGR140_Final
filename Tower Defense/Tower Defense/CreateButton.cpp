@@ -6,7 +6,7 @@ bool CreateButton::Contains(float x, float y, std::vector<CreateButton>& button)
 {
 	for (int i = 0; i < button.size(); i++)
 	{
-		if (x >= button.at(i).x - 0.01f && x < button.at(i).x + button.at(i).width)
+		if (x >= button.at(i).x && x < button.at(i).x + button.at(i).width)
 		{
 			if (y > button.at(i).y - button.at(i).height && y <= button.at(i).y)
 			{
