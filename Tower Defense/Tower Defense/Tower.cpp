@@ -50,7 +50,7 @@ void Tower::Draw(std::vector<Tower>& tower)
 		glTexCoord2f(1.0, 0.0);
 		glVertex2f(tower.at(i).center.X - 0.18f, tower.at(i).center.Y);
 		glEnd();
-		glPopMatrix();
+		//glPopMatrix();
 
 		glDisable(GL_TEXTURE_2D);
 	}
@@ -122,12 +122,12 @@ bool Tower::IsInRange(Vector2 position)
 	return false;
 }
 
-Enemy Tower::Target()
+/*Enemy Tower::Target()
 {
 	return targets;
-}
+}*/
 
-void Tower::GetEnemy(std::vector<Enemy> enemies)
+/*void Tower::GetEnemy(std::vector<Enemy> enemies)
 {
 	//target = NULL;
 	float smallestRange = radius;
@@ -141,9 +141,9 @@ void Tower::GetEnemy(std::vector<Enemy> enemies)
 			std::cout << enemies.at(i).center.X << ", "<< targets.center.X << std::endl;
 		}
 	}
-}
+}*/
 
-void Tower::RotateToTarget()
+/*void Tower::RotateToTarget()
 {
 	Vector2 direction;// = center - targets.center;
 	direction.X = center.X - targets.center.X;
@@ -151,8 +151,5 @@ void Tower::RotateToTarget()
 	direction.Normalize();
 
 	rotation = (float)atan2(-direction.X, direction.Y);
-}
+}*/
 
-void Tower::Updates()
-{
-}

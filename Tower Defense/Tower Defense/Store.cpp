@@ -15,10 +15,12 @@ void Store::Draw()
 
 	glBegin(GL_QUADS);
 
-	glVertex2f(-1.0f, -0.833333f); //0.0f, 0.0f
-	glVertex2f(1.0f, -0.833333f); //0.4f, 0.0f
+	glVertex2f(-1.0f, -0.62f); //0.0f, 0.0f
+	glVertex2f(1.0f, -0.62f); //0.4f, 0.0f
 	glVertex2f(1.0f, -1.0f); //0.4f, -0.1f
 	glVertex2f(-1.0f, -1.0f);
 
 	glEnd();
+
+	glColor3f(1.0f, 1.0f, 1.0f);
 }

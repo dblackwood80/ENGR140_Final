@@ -3,13 +3,14 @@
 #include "Enemy.h"
 #include "CreateButton.h"
 #include "Level.h"
-#include "Vector2.h"
+#include "Store.h"
 #include <fstream>
 #include <chrono>
 
 CreateButton button;
 Enemy enemy1;
 Tower tower;
+Store store;
 
 Level levels(Vector2(-1.0f, 0.98f));
 typedef std::chrono::steady_clock Clock;
@@ -50,7 +51,7 @@ App::App(const char* label, int x, int y, int w, int h): GlutApp(label, x, y, w,
     my = 0.0; 
     
 	#if defined WIN32
-    grass = loadTexture("Grass.bmp");
+    grass = loadTexture("Grass_Normal.bmp");
     path = loadTexture("Path.bmp");
 	enemyTexture1 = loadTexture("Enemy1.bmp");
 	greenTower = loadTexture("Turret_Green.bmp");
@@ -65,7 +66,7 @@ App::App(const char* label, int x, int y, int w, int h): GlutApp(label, x, y, w,
 
 void App::initializeLevel(std::string filename)
 {
-	enemy1.init(enemyTexture1, Vector2(-1.0f, 0.98f), 1000, 10, 0.003f);
+	enemy1.init(enemyTexture1, Vector2(-1.0f, 0.98f), 1000, 10, 0.005f);
 	enemy1.SetWaypoints(levels.Waypoints());
 	std::cout << "should be once" << levels.Waypoints().at(0).X << std::endl;
 //	towerVec.push_back(Tower(greenTower, Vector2(0.0f, 0.0f)));
@@ -266,6 +267,8 @@ void App::draw() {
 			redraw();
 		}*/
 
+		store.Draw();
+
 		if (enemy1.alive)
 		{
 			enemy1.drawEnemy();
@@ -379,13 +382,13 @@ void App::idle()
 		enemy1.Updates();
 		tower.Updates();
 
-		if (tower.Target().center.X == NULL && nodes == 0)
+		/*if (tower.Target().center.X == NULL && nodes == 0)
 		{
 			nodes++;
 			std::vector<Enemy> enemies;
 			enemies.push_back(enemy1);
 			tower.GetEnemy(enemies);
-		}
+		}*/
 
 		if (enemy1.currentHealth > 0)
 		{

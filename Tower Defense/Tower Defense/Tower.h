@@ -5,7 +5,6 @@
 #include "Vector2.h"
 #include "freeglut.h"
 #include "Sprite.h"
-#include "Enemy.h"
 
 class Tower : public Sprite
 {
@@ -13,8 +12,6 @@ public:
 	float x, y, radius;
 
 	int cost, damage;
-
-	Enemy targets;
 
 public:
 
@@ -37,13 +34,13 @@ public:
 
 	bool IsInRange(Vector2 position);
 
-	Enemy Target();
+	//Enemy Target();
 
-	void GetEnemy(std::vector<Enemy> enemies);
+	//void GetEnemy(std::vector<Enemy> enemies);
 
-	void RotateToTarget();
+	//void RotateToTarget();
 
-	void Updates();
+	//void Updates();
 
 };
 
