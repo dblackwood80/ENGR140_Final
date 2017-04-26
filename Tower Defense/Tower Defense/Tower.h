@@ -13,6 +13,8 @@ public:
 
 	int cost, damage;
 
+	float width = 0.18f, height = 0.18f;
+
 public:
 
 

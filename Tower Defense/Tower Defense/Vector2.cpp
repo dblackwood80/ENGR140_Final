@@ -30,6 +30,11 @@ Vector2 Vector2::operator*(double scaleFactor)
 	return Vector2(X * scaleFactor, Y * scaleFactor);
 }
 
+bool Vector2::operator!=(Vector2 value1)
+{
+	return (X != value1.X) || (Y != value1.Y);
+}
+
 void Vector2::Normalize()
 {
 	double val = 1.0f / (double)sqrt((X * X) + (Y * Y));

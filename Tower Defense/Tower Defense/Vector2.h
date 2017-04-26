@@ -17,6 +17,8 @@ public:
 	Vector2 *zeroVector();
 	Vector2 operator *(double scaleFactor);
 
+	bool operator!=(Vector2 value1);
+
 	void Normalize();
 
 	Vector2 operator-(Vector2 value);

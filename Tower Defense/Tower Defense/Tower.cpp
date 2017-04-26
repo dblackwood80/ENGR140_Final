@@ -63,9 +63,9 @@ bool Tower::Contains(float x, float y, std::vector<Tower>& tower)
 {
 	for (int i = 0; i < tower.size(); i++)
 	{
-		if (x >= tower.at(i).x - width && x < tower.at(i).x + width)
+		if (x >= tower.at(i).position.X - width && x < tower.at(i).position.X + width)
 		{
-			if (y > tower.at(i).y - height && y <= tower.at(i).y + height)
+			if (y > tower.at(i).position.Y - height && y <= tower.at(i).position.Y + height)
 			{
 				return true;
 			}
@@ -77,7 +77,7 @@ bool Tower::Contains(float x, float y, std::vector<Tower>& tower)
 
 bool Tower::InBounds(float y) //Make sure not placing in the store area
 {
-	if (y > -0.8f + height)
+	if (y > -0.62f + height)
 	{
 		return true;
 	}
@@ -146,9 +146,10 @@ bool Tower::IsInRange(Vector2 position)
 /*void Tower::RotateToTarget()
 {
 	Vector2 direction;// = center - targets.center;
-	direction.X = center.X - targets.center.X;
-	direction.Y = center.Y - targets.center.Y;
-	direction.Normalize();
+	
+	//direction.X = center.X - targets.center.X;
+	//direction.Y = center.Y - targets.center.Y;
+	//direction.Normalize();
 
 	rotation = (float)atan2(-direction.X, direction.Y);
 }*/

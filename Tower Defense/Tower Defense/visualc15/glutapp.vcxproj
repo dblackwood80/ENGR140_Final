@@ -121,6 +121,7 @@
     <ClCompile Include="..\Enemy.cpp" />
     <ClCompile Include="..\GlutApp.cpp" />
     <ClCompile Include="..\Level.cpp" />
+    <ClCompile Include="..\Player.cpp" />
     <ClCompile Include="..\RgbImage.cpp" />
     <ClCompile Include="..\Sprite.cpp" />
     <ClCompile Include="..\Store.cpp" />
@@ -134,6 +135,7 @@
     <ClInclude Include="..\Enemy.h" />
     <ClInclude Include="..\GlutApp.h" />
     <ClInclude Include="..\Level.h" />
+    <ClInclude Include="..\Player.h" />
     <ClInclude Include="..\RgbImage.h" />
     <ClInclude Include="..\Sprite.h" />
     <ClInclude Include="..\Store.h" />

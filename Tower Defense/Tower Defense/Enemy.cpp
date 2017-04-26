@@ -190,7 +190,7 @@ void Enemy::Updates()
 				angleFacing = 0.0f;
 			}
 
-			std::cout << direction.X << ", " << direction.Y << std::endl;
+			//std::cout << direction.X << ", " << direction.Y << std::endl;
 
 			//direction.Normalize();
 

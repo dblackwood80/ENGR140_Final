@@ -4,6 +4,7 @@
 #include "CreateButton.h"
 #include "Level.h"
 #include "Store.h"
+#include "Player.h"
 #include <fstream>
 #include <chrono>
 
@@ -11,6 +12,7 @@ CreateButton button;
 Enemy enemy1;
 Tower tower;
 Store store;
+Player player;
 
 Level levels(Vector2(-1.0f, 0.98f));
 typedef std::chrono::steady_clock Clock;
@@ -32,18 +34,6 @@ float tileWidth = 0.18f, tileHeight = 0.18f;
 //int offsetW = 1, offsetH = 1;
 
 //std::vector<std::vector<int> > map(9, std::vector<int> (11));
-
-int map[9][11] = { //our map
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-	{ 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
-	{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 },
-	{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 },
-	{ 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1 },
-	{ 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1 },
-	{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1 },
-};
 
 App::App(const char* label, int x, int y, int w, int h): GlutApp(label, x, y, w, h){
     // Initialize state variables
@@ -68,6 +58,8 @@ void App::initializeLevel(std::string filename)
 {
 	enemy1.init(enemyTexture1, Vector2(-1.0f, 0.98f), 1000, 10, 0.005f);
 	enemy1.SetWaypoints(levels.Waypoints());
+	player.init(levels, greenTower);
+	
 	std::cout << "should be once" << levels.Waypoints().at(0).X << std::endl;
 //	towerVec.push_back(Tower(greenTower, Vector2(0.0f, 0.0f)));
 	/*level.open("Levels/" + filename);
@@ -322,9 +314,9 @@ void App::draw() {
 		{
 			//std::cout << "done 1" << std::endl;
 			for (int yTile = 1; yTile < 10; yTile++)
-			{
+			{	
 				//std::cout << "done 2" << std::endl;
-				if (map[yTile - 1][xTile - 1] == 0) //if grass
+				if (levels.map[yTile - 1][xTile - 1] == 0) //if grass
 				{
 					//std::cout << map[yTile - 1][xTile - 1] << ", " << tileWidth * xTile << ", " << tileHeight * yTile << std::endl;
 					glBindTexture(GL_TEXTURE_2D, grass);
@@ -332,7 +324,7 @@ void App::draw() {
 					//offsetH++;
 					//glDisable(GL_TEXTURE_2D);
 				}
-				else if (map[yTile - 1][xTile - 1] == 1) //else if path
+				else if (levels.map[yTile - 1][xTile - 1] == 1) //else if path
 				{
 					//std::cout << map[yTile - 1][xTile - 1] << ", " << map[yTile - 1][xTile - 1] << std::endl;
 					//std::cout << map[yTile - 1][xTile - 1] << ", " << tileWidth * xTile << ", " << tileHeight * yTile << std::endl;
@@ -393,7 +385,7 @@ void App::idle()
 		if (enemy1.currentHealth > 0)
 		{
 			float healthPercentage = (float)enemy1.currentHealth / (float)enemy1.startHealth;
-
+			// tower.RotateToTarget(enemy1);
 			//enemy1.currentHealth -= 5.0f;
 			//std::cout << enemy1.currentHealth << " " << healthPercentage << std::endl;
 		}
@@ -406,10 +398,22 @@ void App::mouseDown(float x, float y){ //Left click button down
     mx = x;
     my = y;
 
-	if (currentMenu == Play)
+	if (currentMenu == Play && tower.InBounds(y) && !(tower.Contains(mx, my, towerVec)) && towerVec.size() > 0 && !(levels.CheckPlacement(mx, my, levels.AllPathPoints())))
 	{
+		std::cout << "Push 1" << std::endl;
 		//towerVec.push_back(Tower(greenTower, Vector2(0.0f, 0.0f)));
 		towerVec.push_back(Tower(greenTower, Vector2(mx, my)));
+		player.Updates();
+	}
+	else if(currentMenu == Play && tower.InBounds(y) && towerVec.size() <= 0 && !(levels.CheckPlacement(mx, my, levels.AllPathPoints())))
+	{
+		std::cout << "Push 2" << std::endl;
+		towerVec.push_back(Tower(greenTower, Vector2(mx, my)));
+	}
+	else if (currentMenu == Play && tower.InBounds(y) && tower.Contains(mx, my, towerVec) && towerVec.size() > 0)
+	{
+		tower.DeleteTower(mx, my, towerVec);
+		std::cout << "OPTIONS POP UP" << std::endl;
 	}
     
     // Redraw the scene
