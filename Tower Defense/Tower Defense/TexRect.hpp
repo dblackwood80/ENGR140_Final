@@ -19,7 +19,6 @@
 
 #include <iostream>
 #include <vector>
-#include "Tower.h"
 
 class TexRect {
     float x;
@@ -74,24 +73,6 @@ void draw(float tileWidth, float tileHeight) {
 
 	glEnd();
 }
-
-bool Contains(float x, float y, std::vector<Tower>& tower)
-{
-	for (int i = 0; i < tower.size(); i++)
-	{
-		if (x >= tower.at(i).x && x < tower.at(i).x + tower.at(i).width)
-		{
-			if (y > tower.at(i).y - tower.at(i).height && y <= tower.at(i).y)
-			{
-				std::cout << x << " " << y << " good " << std::endl;
-				return true;
-			}
-
-		}
-	}
-	return false;
-}
-
 };
 
 #endif /* TexRect_hpp */

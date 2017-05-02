@@ -49,41 +49,23 @@ GLuint Enemy::loadEnemy(const char* filename)
 
 void Enemy::drawEnemy()
 {
-	//std::cout << position.X << ", " << position.Y << std::endl;
-
 	glBindTexture(GL_TEXTURE_2D, texture);
+	//std::cout << texture << std::endl;
 
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-	//glMatrixMode(GL_MODELVIEW);
-	//glLoadIdentity();
-
-	/*if (change <= -0.545f)
-	{
-	tempChange = change;
-	//change = 0;
-	glTranslatef(-1.8f, change, 0.0f);
-	glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
-	}
-	else
-	{
-	glTranslatef(-1.8f, change, 0.0f);
-	glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
-	}*/
 
 	glMatrixMode(GL_TEXTURE);
 	glLoadIdentity();
 	glPushMatrix();
 
-	//glTranslatef(0.5f, 0.5f, 0.0f);
 	glRotatef(angleFacing, 0.0f, 0.0f, 1.0f);
-	//glTranslatef(-0.5f, -0.5f, 0.0f);
 
 	glBegin(GL_QUADS);
-
+	
 	glTexCoord2f(0.0, 0.0);
-	glVertex2f(position.X, position.Y);
+	glVertex2f(position.X, position.Y);	
 
 	glTexCoord2f(0.0, 1.0);
 	glVertex2f(position.X, position.Y - tileHeight);
@@ -97,11 +79,10 @@ void Enemy::drawEnemy()
 
 	glPopMatrix();
 
+	
 	glMatrixMode(GL_MODELVIEW);
-	//glLoadIdentity();
 
 	glDisable(GL_TEXTURE_2D);
-	//redraw();
 }
 
 void Enemy::SetWaypoints(std::deque<Vector2> waypoints)
@@ -140,7 +121,7 @@ void Enemy::setHealth(float health)
 
 bool Enemy::IsDead()
 {
-	return currentHealth <= 0; 
+	return !alive;
 }
 
 int Enemy::BountyGiven()
@@ -152,18 +133,19 @@ void Enemy::Updates()
 {
 	numOfPoints = points.size();
 
-	//std::cout << "Size: " << points.size() << std::endl;
-
-	if (numOfPoints > 0)
+	if (points.size() > 0)
 	{
+		//std::cout << "1" << std::endl;
 		if (DistanceToDestination() < speed)
 		{
+			//std::cout << "2" << std::endl;
 			//std::cout << "Here 1" << std::endl;
 			position = points.front();
 			points.pop_front();
 		}
 		else
 		{
+			
 			//std::cout << "Here 2 " << DistanceToDestination() << std::endl;
 			Vector2 direction;// = points.front() - position; //Vector2 subtracting vectors was wrong implementation
 			direction.X = points.front().X - position.X;
@@ -198,15 +180,22 @@ void Enemy::Updates()
 			velocity.X = direction.X * speed;
 			velocity.Y = direction.Y * speed;
 			//std::cout << position.X << ", " << position.Y << std::endl;
-			position.X += velocity.X;
-			position.Y += velocity.Y;
+			position.X = position.X + velocity.X;
+			ran += 1;
+			position.Y = position.Y + velocity.Y;
 			//std::cout << position.X << ", " << position.Y << std::endl;
+			//std::cout << "3 " << velocity.Y << ", " << position.Y << ", " << ran << std::endl;
 		}
 	}
 	else
 	{
 		alive = false;
 	}
+}
+
+std::deque<Vector2> Enemy::Waypoint()
+{
+	return points;
 }
 
 Enemy Enemy::operator=(Enemy value1)

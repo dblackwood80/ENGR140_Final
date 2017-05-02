@@ -55,7 +55,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../;../freeglut;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../freeglut;../pngloader/include/IL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -70,7 +70,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>../freeglut/freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../freeglut/freeglut.lib;../pngloader/lib/x86/Release/DevIL.lib;../pngloader/lib/x86/Release/ILU.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
@@ -116,7 +116,9 @@
   <ItemGroup>
     <ClCompile Include="..\App.cpp" />
     <ClCompile Include="..\app_main.cpp" />
-    <ClCompile Include="..\ArrowTower.cpp" />
+    <ClCompile Include="..\Matrix.cpp" />
+    <ClCompile Include="..\PlasmaTower.cpp" />
+    <ClCompile Include="..\Bullet.cpp" />
     <ClCompile Include="..\CreateButton.cpp" />
     <ClCompile Include="..\Enemy.cpp" />
     <ClCompile Include="..\GlutApp.cpp" />
@@ -127,10 +129,14 @@
     <ClCompile Include="..\Store.cpp" />
     <ClCompile Include="..\Tower.cpp" />
     <ClCompile Include="..\Vector2.cpp" />
+    <ClCompile Include="..\Wave.cpp" />
+    <ClCompile Include="..\WaveManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\App.h" />
-    <ClInclude Include="..\ArrowTower.h" />
+    <ClInclude Include="..\Matrix.h" />
+    <ClInclude Include="..\PlasmaTower.h" />
+    <ClInclude Include="..\Bullet.h" />
     <ClInclude Include="..\CreateButton.h" />
     <ClInclude Include="..\Enemy.h" />
     <ClInclude Include="..\GlutApp.h" />
@@ -142,6 +148,8 @@
     <ClInclude Include="..\TexRect.hpp" />
     <ClInclude Include="..\Tower.h" />
     <ClInclude Include="..\Vector2.h" />
+    <ClInclude Include="..\Wave.h" />
+    <ClInclude Include="..\WaveManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

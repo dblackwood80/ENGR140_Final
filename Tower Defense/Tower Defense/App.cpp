@@ -1,22 +1,34 @@
 #include "App.h"
 #include "Tower.h"
-#include "Enemy.h"
+//#include "Enemy.h"
 #include "CreateButton.h"
-#include "Level.h"
+//#include "Level.h"
 #include "Store.h"
 #include "Player.h"
+#include "Wave.h"
+#include "WaveManager.h"
+#include "PlasmaTower.h"
 #include <fstream>
-#include <chrono>
 
 CreateButton button;
-Enemy enemy1;
+//Enemy enemy1;
+Wave wave;
+//WaveManager waveManager;
 Tower tower;
+//PlasmaTower tower;
+Tower selectedTower;
 Store store;
 Player player;
 
+struct test
+{
+	float x, y;
+};
+
+test a;
+
+
 Level levels(Vector2(-1.0f, 0.98f));
-typedef std::chrono::steady_clock Clock;
-int nodes = 0;
 
 float xChange = 0, yChange = 0;
 std::vector<Tower> towerVec;
@@ -45,6 +57,7 @@ App::App(const char* label, int x, int y, int w, int h): GlutApp(label, x, y, w,
     path = loadTexture("Path.bmp");
 	enemyTexture1 = loadTexture("Enemy1.bmp");
 	greenTower = loadTexture("Turret_Green.bmp");
+	redTower = loadTexture("Turret_Red.bmp");
 	#else
 	monalisa = loadTexture("monalisa.bmp");
 	wall = loadTexture("wall.bmp");
@@ -56,11 +69,18 @@ App::App(const char* label, int x, int y, int w, int h): GlutApp(label, x, y, w,
 
 void App::initializeLevel(std::string filename)
 {
-	enemy1.init(enemyTexture1, Vector2(-1.0f, 0.98f), 1000, 10, 0.005f);
-	enemy1.SetWaypoints(levels.Waypoints());
+	//enemy1.init(enemyTexture1, Vector2(-1.0f, 0.98f), 1000, 10, 0.005f);
+	//enemy1.SetWaypoints(levels.Waypoints());
+	wave.init(0, 5, player, levels, enemyTexture1);
+	wave.Start();
+	//waveManager.init(levels, 1, enemyTexture1);
+	//waveManager.StartNextWave();
 	player.init(levels, greenTower);
+	store.init(wave);
+
+	a.x = -0.98f;
+	a.y = 0.0f;
 	
-	std::cout << "should be once" << levels.Waypoints().at(0).X << std::endl;
 //	towerVec.push_back(Tower(greenTower, Vector2(0.0f, 0.0f)));
 	/*level.open("Levels/" + filename);
 
@@ -197,10 +217,10 @@ void App::draw() {
 		glLoadIdentity();
 
 		glColor3f(0.0f, 0.0f, 0.0f);
-		glRasterPos2f(-0.48f, -0.07f);
+		glRasterPos2f(-0.48f, -0.77f);
 		glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *)"ONE PLAYER");
 
-		glRasterPos2f(0.0125f, -0.07f);
+		glRasterPos2f(0.0125f, -0.77f);
 		glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *)"TWO PLAYER");
 
 		glColor3f(0.75f, 0.75f, 0.75f);
@@ -239,7 +259,21 @@ void App::draw() {
 		glColor3d(1.0, 1.0, 1.0);
 		
 
-		tower.Draw(towerVec);
+		a.y += 0.01f;
+
+		if (a.y != 0.98f)
+		{
+			glPointSize(10);
+			glBegin(GL_POINTS);
+
+			glVertex2f(a.x, a.y);
+
+			glEnd();
+		}
+
+		
+
+		tower.Draw(towerVec, wave.Enemies());
 		/*glMatrixMode(GL_TEXTURE);
 		glLoadIdentity();
 		glTranslatef(0.5f, 0.5f, 0.0f);
@@ -249,8 +283,6 @@ void App::draw() {
 
 		//Tower tower3(greenTower, Vector2().zeroVector());
 
-		Clock::time_point t1 = Clock::now();
-
 		/*if (yChange <=0.54f)
 		{
 			yChange += 0.0005f;
@@ -258,12 +290,20 @@ void App::draw() {
 			enemy.drawEnemy(-1.0f + xChange, 0.98f - yChange);
 			redraw();
 		}*/
+		buttons.clear();
+		button.DrawButton(buttons);
 
-		store.Draw();
+		store.Draw(wave.player.money, selectedTower.center.X, selectedTower.center.Y, selectedTower.radius);
+		//std::cout << "SELECT: " << selectedTower.center.X << selectedTower.center.Y << std::endl;
+		//std::cout << wave.player.money << std::endl;
+		
+		//redraw();
 
-		if (enemy1.alive)
-		{
-			enemy1.drawEnemy();
+		//if (wave.Enemies().size() > 0)
+		//{
+			wave.DrawWaves();
+			//waveManager.DrawAllWaves();
+			//enemy1.drawEnemy();
 			/*if (yChange < 0.535f)
 			{
 				yChange += enemy1.speed;
@@ -306,7 +346,7 @@ void App::draw() {
 				//std::cout << "2 Current x and y changes: X: " << xChange << " Y: " << yChange << std::endl;
 			}*/
 			redraw();
-		}
+		//}
 
 		//std::cout << enemy.y << " the y value" << std::endl;
 
@@ -364,15 +404,34 @@ void App::draw() {
 
 void App::idle()
 {
-	if (enemy1.currentHealth <= 0 && currentMenu == Play)
+	/*if (enemy1.currentHealth <= 0 && currentMenu == Play)
 	{
 		enemy1.alive = false;
-	}
+	}*/
 	
 	if (currentMenu == Play)
 	{
-		enemy1.Updates();
-		tower.Updates();
+		wave.Updates();
+
+		if (/*!(tower.targets.alive) && */wave.Enemies().size() > 0 && towerVec.size() > 0)
+		{
+
+			//std::cout << "INSIDE: " << wave.Enemies().front().position.X << std::endl;
+			std::vector<Enemy> enemies;
+			for (int p = 0; p < wave.Enemies().size(); p++)
+			{
+				enemies.push_back(wave.Enemies().at(p));
+				//tower.stuff.push_back(enemies.at(p));
+			}
+			tower.GetEnemy(wave.Enemies(), towerVec);
+			tower.Updates(wave.Enemies());
+			//std::cout <<"SIZE: " << enemies.size() << ", " << enemies.at(0).position.X + tower.center.X << std::endl;
+		}
+
+		//waveManager.Updates();
+
+		//enemy1.Updates();
+		
 
 		/*if (tower.Target().center.X == NULL && nodes == 0)
 		{
@@ -382,13 +441,13 @@ void App::idle()
 			tower.GetEnemy(enemies);
 		}*/
 
-		if (enemy1.currentHealth > 0)
+		/*if (enemy1.currentHealth > 0)
 		{
 			float healthPercentage = (float)enemy1.currentHealth / (float)enemy1.startHealth;
 			// tower.RotateToTarget(enemy1);
 			//enemy1.currentHealth -= 5.0f;
 			//std::cout << enemy1.currentHealth << " " << healthPercentage << std::endl;
-		}
+		}*/
 	}
 
 }
@@ -398,22 +457,71 @@ void App::mouseDown(float x, float y){ //Left click button down
     mx = x;
     my = y;
 
-	if (currentMenu == Play && tower.InBounds(y) && !(tower.Contains(mx, my, towerVec)) && towerVec.size() > 0 && !(levels.CheckPlacement(mx, my, levels.AllPathPoints())))
+	if (currentMenu == Play)
 	{
+		if (tower.InBounds(my))
+		{
+			store.showStats = false;
+		}
+
+		if (store.upgrade.Contains(mx, my, store.buttons) && wave.player.money >= 5 && selectedTower.upgradeLevel < 1)
+		{
+			wave.player.money -= 10;
+			selectedTower.texture = redTower;
+			selectedTower.upgradeLevel += 1;
+
+			for (int t = 0; t < towerVec.size(); t++)
+			{
+				if (towerVec.at(t).position.X == selectedTower.position.X && towerVec.at(t).position.Y == selectedTower.position.Y)
+				{
+					towerVec.at(t) = selectedTower;					
+				}
+			}
+			std::cout << "LEVEL: " << selectedTower.upgradeLevel << std::endl;
+			std::cout << "UPGRADED: " << selectedTower.position.X << std::endl;
+		} 
+		else if (store.upgrade.Contains(mx, my, store.buttons) && wave.player.money >= 5 && selectedTower.upgradeLevel == 1)
+		{
+			wave.player.money -= 20;
+			selectedTower.upgradeLevel += 1;
+			selectedTower.radius += 0.1f;
+
+			for (int t = 0; t < towerVec.size(); t++)
+			{
+				if (towerVec.at(t).position.X == selectedTower.position.X && towerVec.at(t).position.Y == selectedTower.position.Y)
+				{
+					towerVec.at(t) = selectedTower;
+				}
+			}
+		}
+	}
+
+
+	if (currentMenu == Play && tower.InBounds(y) && !(tower.Contains(mx, my, towerVec)) && towerVec.size() > 0 && !(levels.CheckPlacement(mx, my, levels.AllPathPoints())) && wave.player.money >= 10)
+	{
+		wave.player.money -= 10;
 		std::cout << "Push 1" << std::endl;
 		//towerVec.push_back(Tower(greenTower, Vector2(0.0f, 0.0f)));
-		towerVec.push_back(Tower(greenTower, Vector2(mx, my)));
+		Tower push;
+		push.init(greenTower, Vector2(mx, my));
+		towerVec.push_back(push);
 		player.Updates();
 	}
-	else if(currentMenu == Play && tower.InBounds(y) && towerVec.size() <= 0 && !(levels.CheckPlacement(mx, my, levels.AllPathPoints())))
-	{
+	else if(currentMenu == Play && tower.InBounds(y) && towerVec.size() <= 0 && !(levels.CheckPlacement(mx, my, levels.AllPathPoints())) && wave.player.money >= 10)
+	{		
+		wave.player.money -= 10;
 		std::cout << "Push 2" << std::endl;
-		towerVec.push_back(Tower(greenTower, Vector2(mx, my)));
+		Tower push;
+		push.init(greenTower, Vector2(mx, my));
+		towerVec.push_back(push);
 	}
 	else if (currentMenu == Play && tower.InBounds(y) && tower.Contains(mx, my, towerVec) && towerVec.size() > 0)
 	{
-		tower.DeleteTower(mx, my, towerVec);
+		selectedTower = tower.ContainsTower(mx, my, towerVec);
+		//tower.DeleteTower(mx, my, towerVec);
 		std::cout << "OPTIONS POP UP" << std::endl;
+
+		store.showStats = true;
 	}
     
     // Redraw the scene
@@ -451,6 +559,7 @@ void App::keyPress(unsigned char key) {
 
 	if (key == 32)
 	{
+		std::cout << tower.angle << std::endl;
 		if (yChange < 0.535f)
 		{
 			yChange += .005f;

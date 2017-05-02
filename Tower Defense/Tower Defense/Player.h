@@ -1,7 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 #include <vector>
-#include "Tower.h"
+//#include "Tower.h"
 #include "Level.h"
 #include "GlutApp.h"
 
@@ -31,13 +31,12 @@ public:
 
 	GlutApp* app;
 
-private:
-	int money = 50;
+	int money = 500;
 	int lives = 30;
 
 	int cellX, cellY;
 
-	std::vector<Tower> towers;
+	//std::vector<Tower> towers;
 	Level level;
 
 	GLuint towerTexture;

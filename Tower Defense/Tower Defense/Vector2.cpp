@@ -42,6 +42,32 @@ void Vector2::Normalize()
 	Y *= val;
 }
 
+Vector2 Vector2::Transform(Vector2 position, Matrix matrix)
+{
+	Transform( position, matrix, position);
+	return position;
+}
+
+Vector2 Vector2::Subtract(Vector2 value1, Vector2 value2)
+{
+	value1.X -= value2.X;
+	value1.Y -= value2.Y;
+	return value1;
+}
+
+Vector2::Vector2(double value)
+{
+	this->X = value;
+	this->Y = value;
+}
+
+void Vector2::Transform(Vector2 position, Matrix matrix, Vector2 result)
+{
+	result = Vector2((position.X * matrix.M11) + (position.Y * matrix.M21) + matrix.M41,
+		(position.X * matrix.M12) + (position.Y * matrix.M22) + matrix.M42);
+}
+
+
 Vector2 Vector2::operator -(Vector2 value)// not right look ate enemy.cpp updates
 {
 	value.X = -value.X;
@@ -58,7 +84,15 @@ Vector2 Vector2::Multiply(Vector2 value1, double scaleFactor)
 
 Vector2 Vector2::operator +=(Vector2 value1) //doesnt work
 {
-	return Vector2(0.005f + value1.X, Y + value1.Y);
+	X = X + value1.X;
+	Y = Y + value1.Y;
+
+	return Vector2(X, Y);
+}
+
+bool Vector2::operator ==(Vector2 value1)
+{
+	return (X == value1.X) || (Y == value1.Y);
 }
 
 float Vector2::convertX(float x)

@@ -2,6 +2,7 @@
 #define CREATEBUTTON_H
 
 #include <vector>
+#include "freeglut.h"
 
 class CreateButton
 {
@@ -14,8 +15,14 @@ public:
 	~CreateButton();
 	CreateButton(float x, float y, float width, float height);
 
+	void init(float x, float y, float width, float height, GLuint texture);
+
 	bool Contains(float x, float y, std::vector<CreateButton>& button);
 	void DrawButton(std::vector<CreateButton>& button);
+
+	void DrawTexturedButton(std::vector<CreateButton>& button, GLuint texture);
+
+	GLuint texture;
 
 };
 

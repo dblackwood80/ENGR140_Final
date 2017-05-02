@@ -57,14 +57,14 @@ bool Player::ValidSpot()
 
 	std::cout << "WHat" << mouseX << ", " << mouseY << std::endl;
 
-	for (int i = 0; i < towers.size(); i++)
+	/*for (int i = 0; i < towers.size(); i++)
 	{
 		
 		areaClear = (towers.at(i).position != Vector2(ConvertX(mouseX), ConvertY(mouseY)));
 
 		if (!areaClear)
 			break;
-	}
+	}*/
 
 //	bool onPath = (level.Index(cellX, cellY) != 1);
 
@@ -75,12 +75,13 @@ void Player::Updates()
 {
 	if (ValidSpot())
 	{
-		Tower tower(towerTexture, Vector2(mouseX, mouseY));
-		towers.push_back(tower);
+		//Tower tower;// (towerTexture, Vector2(mouseX, mouseY));
+		//tower.init(towerTexture, Vector2(mouseX, mouseY));
+		//towers.push_back(tower);
 	}
 
-	for (int i = 0; i < towers.size(); i++)
-	{
+	//for (int i = 0; i < towers.size(); i++)
+	//{
 
-	}
+	//}
 }

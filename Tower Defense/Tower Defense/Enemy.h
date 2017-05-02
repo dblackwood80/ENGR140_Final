@@ -9,9 +9,6 @@
 
 class Enemy : public Sprite
 {
-private:
-	float angleFacing;
-
 public:
 	
 	Enemy();
@@ -29,9 +26,13 @@ public:
 
 	bool IsDead();
 
+	int ran = 0;
+
 	int BountyGiven();
 
 	void Updates();
+
+	std::deque<Vector2> Waypoint();
 
 	Enemy operator=(Enemy value1);
 
@@ -44,10 +45,14 @@ public:
 
 	float startHealth, currentHealth;
 	bool alive = true;
-	float speed = 0.5f;
+	float speed = 0.003f;
 	int bountyGiven;
 
 	int numOfPoints;
+
+	float angleFacing;
+
+	Vector2 direction;
 };
 
 #endif // !ENEMY_H

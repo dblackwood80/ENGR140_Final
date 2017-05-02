@@ -9,8 +9,6 @@ public:
 	Sprite(GLuint tex, Vector2 pos);
 	~Sprite();
 
-	void Draw();
-
 	Vector2 Center();
 
 	void Updates();

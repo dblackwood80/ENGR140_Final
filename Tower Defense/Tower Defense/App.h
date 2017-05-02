@@ -27,6 +27,7 @@ public:
     
     GLuint grass;
 	GLuint greenTower;
+	GLuint redTower;
     GLuint path;    
 	GLuint enemyTexture1;
     
