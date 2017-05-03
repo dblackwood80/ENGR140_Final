@@ -5,6 +5,7 @@
 #include "freeglut.h"
 #include <vector>
 #include <iostream>
+#include "Enemy.h"
 
 class Bullet
 {
@@ -15,10 +16,11 @@ public:
 
 	int damage, age;
 	float rotation, speed;
-	Vector2 position, velocity, center, enemyPosition;
+	Vector2 position, velocity, center, enemypos;
+	Enemy enemies;
 	std::vector<Bullet> bulletVec;
 	bool IsDead();
-	void init(Vector2 position, float rotation, float speed, int damage, Vector2 enemyPosition);
+	void init(Vector2 position, float rotation, float speed, int damage, Enemy enemies, Vector2 enemypos);
 	void Kill();
 	void Updates();
 	void SetRotation(float val);

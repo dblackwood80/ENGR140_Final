@@ -57,12 +57,26 @@ void Wave::Updates()
 {
 	//std::cout << "Reached it here 3 " << enemies.size() << ", " << spawning <<std::endl;
 
+	int timeSpeed = glutGet(GLUT_ELAPSED_TIME), time = glutGet(GLUT_ELAPSED_TIME);
+	int delta, deltaSpeed;
+
+	delta = time - oldTime;
+
+	deltaSpeed = timeSpeed - oldSpeedTime;
+
 	for (int i = 0; i < enemies.size(); i++)
 	{
 		if (enemies.size() >= 1)
 		{
-			enemies.at(i).speed = speed / enemies.size();
+			enemies.at(i).speed = (speed * deltaSpeed) / (20 * enemies.size());
 			//std::cout << enemies.size() << std::endl;
+			//deltaSpeed = 0;
+			oldSpeedTime = timeSpeed;
+		}
+		else if (enemies.size() < 1)
+		{
+			enemies.at(i).speed = (speed * deltaSpeed) / (20);
+			oldSpeedTime = timeSpeed;
 		}
 		
 		Enemy enemy = enemies.at(i);
@@ -90,11 +104,6 @@ void Wave::Updates()
 			i--;
 		}
 	}
-
-	int time = glutGet(GLUT_ELAPSED_TIME);
-	int delta;
-
-	delta = time - oldTime;
 
 	if (enemiesSpawned == numOfEnemies)
 	{
@@ -181,8 +190,8 @@ void Wave::EnemyUpdates()
 
 				//std::cout << "Here 2 " << DistanceToDestination() << std::endl;
 				// = points.front() - position; //Vector2 subtracting vectors was wrong implementation
-				enemies.at(i).direction.X = enemies.at(i).points.front().X - enemies.at(i).position.X;
-				enemies.at(i).direction.Y = enemies.at(i).points.front().Y - enemies.at(i).position.Y;
+				enemies.at(i).direction.X = enemies.at(i).Waypoint().front().X - enemies.at(i).position.X;
+				enemies.at(i).direction.Y = enemies.at(i).Waypoint().front().Y - enemies.at(i).position.Y;
 
 				//std::cout << "what is " << enemies.front().position.X << ", " << enemies.at(i).position.Y << std::endl;
 

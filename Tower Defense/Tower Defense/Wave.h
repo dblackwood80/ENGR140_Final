@@ -51,7 +51,7 @@ public:
 
 	Player player;
 
-	int oldTime = 0;
+	int oldSpeedTime = 0, oldTime = 0;
 
 	//std::vector<Vector2> points;
 

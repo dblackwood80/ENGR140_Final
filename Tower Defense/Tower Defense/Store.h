@@ -24,11 +24,13 @@ public:
 
 	bool showStats = false;
 
-	CreateButton upgrade;
-	std::vector<CreateButton> buttons;
+	CreateButton upgrade, startWave;
+	std::vector<CreateButton> upgradeButtons, startButtons;
 
 	double inc = 3.14159 / 12;
 	double max = 2 * 3.14159;
+
+	bool waveStarted = false;
 };
 
 #endif // !STORE_H

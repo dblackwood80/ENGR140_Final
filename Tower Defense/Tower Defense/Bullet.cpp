@@ -13,13 +13,14 @@ bool Bullet::IsDead()
 	return age > 500;
 }
 
-void Bullet::init(Vector2 position, float rotation, float speed, int damage, Vector2 enemyPosition)
+void Bullet::init(Vector2 position, float rotation, float speed, int damage, Enemy enemies, Vector2 enemypos)
 {
 	this->position = position;
 	this->rotation = rotation;
 	this->damage = damage;
 	this->speed = speed;
-	this->enemyPosition = enemyPosition;
+	this->enemies = enemies;
+	this->enemypos = enemypos;
 	this->age = 100;
 }
 
@@ -37,8 +38,8 @@ void Bullet::Updates()
 		//Bullet bull = bulletVec.at(i);
 		//bulletVec.at(i).SetRotation(bulletVec.at(i).rotation);
 		//bulletVec.at(i).velocity = Vector2().Transform(Vector2(0, -bulletVec.at(i).speed), Matrix().CreateRotationZ(bulletVec.at(i).rotation));
-		float dx = bulletVec.at(i).enemyPosition.X - bulletVec.at(i).position.X;
-		float dy = bulletVec.at(i).enemyPosition.Y - bulletVec.at(i).position.Y;
+		float dx = bulletVec.at(i).enemypos.X - bulletVec.at(i).position.X;
+		float dy = bulletVec.at(i).enemypos.Y - bulletVec.at(i).position.Y;
 		bulletVec.at(i).velocity.X = dx;
 		bulletVec.at(i).velocity.Y = dy;
 		bulletVec.at(i).velocity.Normalize();
@@ -58,8 +59,8 @@ void Bullet::Updates()
 
 		bulletVec.at(i).age++;
 		bulletVec.at(i).position += bulletVec.at(i).velocity;
-		if (bulletVec.at(i).position == bulletVec.at(i).enemyPosition)
-		std::cout << "VELOCITY: " << bulletVec.at(i).position.X << ", " << bulletVec.at(i).position.Y << std::endl;
+		//if (bulletVec.at(i).position == bulletVec.at(i).position)
+		std::cout << "VELOCITY: " << bulletVec.at(i).speed << ", " << bulletVec.at(i).velocity.X << ", " << bulletVec.at(i).velocity.Y << std::endl;
 	}
 	Draw();
 }

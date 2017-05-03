@@ -9,7 +9,8 @@ Level::Level(Vector2 originalPoints)
 {
 	this->originalPoints = originalPoints;
 
-	waypoints.push_back(Vector2(originalPoints.X, originalPoints.Y + (1.0f * tileSize)));
+	waypoints.push_back(Vector2(originalPoints.X, originalPoints.Y + (4.0f * tileSize)));
+	waypoints.push_back(Vector2(originalPoints.X, originalPoints.Y + (3.0f * tileSize)));
 	waypoints.push_back(Vector2(originalPoints.X, originalPoints.Y - (3.0f * tileSize))); 
 	waypoints.push_back(Vector2(originalPoints.X + (6.0f * tileSize), originalPoints.Y - (3.0f * tileSize)));
 	waypoints.push_back(Vector2(originalPoints.X + (6.0f * tileSize), originalPoints.Y - (6.0f * tileSize)));

@@ -5,7 +5,9 @@
 Store::Store()
 {
 	upgrade.init(-1.0f, -0.77, 0.4f, 0.1f, NULL);
-	buttons.push_back(upgrade);
+	startWave.init(-0.2f, -0.77f, 0.4f, 0.1f, NULL);
+	upgradeButtons.push_back(upgrade);
+	startButtons.push_back(startWave);
 }
 
 Store::~Store()
@@ -22,6 +24,11 @@ void Store::Draw(int money, float centerX, float centerY, float radius)
 	glRasterPos2f(-0.98f, -0.67f);
 	glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *)"MONEY: ");
 	glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *)moneyChar);
+
+	if (waveStarted == false)
+	{
+		startWave.DrawButton(startButtons);
+	}
 
 	/*glColor3f(0.0f, 0.0f, 0.0f);
 	glRasterPos2f(-0.98f, -0.67f);
@@ -40,7 +47,7 @@ void Store::Draw(int money, float centerX, float centerY, float radius)
 		glColor3f(1.0f, 1.0f, 1.0f);
 		glRasterPos2f(-0.93f, -0.837f);
 		glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *)"UPGRADE");
-		upgrade.DrawButton(buttons);
+		upgrade.DrawButton(upgradeButtons);
 
 		glColor3f(1.0f, 1.0f, 1.0f);
 

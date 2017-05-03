@@ -21,7 +21,7 @@ void PlasmaTower::Update()
 	if (delta > 750 && Target() != NULL)
 	{
 		Bullet bullet;
-		bullet.init(Vector2().Subtract(center, Vector2(0.09)), angle, 6, damage, bullet.enemyPosition);
+		//bullet.init(Vector2().Subtract(center, Vector2(0.09)), angle, 6, damage, bullet.enemyPosition);
 		
 		bullet.bulletVec.push_back(bullet);
 		delta = 0;

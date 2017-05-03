@@ -71,12 +71,11 @@ void App::initializeLevel(std::string filename)
 {
 	//enemy1.init(enemyTexture1, Vector2(-1.0f, 0.98f), 1000, 10, 0.005f);
 	//enemy1.SetWaypoints(levels.Waypoints());
-	wave.init(0, 5, player, levels, enemyTexture1);
-	wave.Start();
+	
+	
 	//waveManager.init(levels, 1, enemyTexture1);
 	//waveManager.StartNextWave();
-	player.init(levels, greenTower);
-	store.init(wave);
+	
 
 	a.x = -0.98f;
 	a.y = 0.0f;
@@ -459,12 +458,21 @@ void App::mouseDown(float x, float y){ //Left click button down
 
 	if (currentMenu == Play)
 	{
+		if (store.startWave.Contains(mx, my, store.startButtons))
+		{
+			wave.init(0, 5, player, levels, enemyTexture1);
+			wave.Start();
+			player.init(levels, greenTower);
+			store.init(wave);
+			store.waveStarted = true;
+		}
+
 		if (tower.InBounds(my))
 		{
 			store.showStats = false;
 		}
 
-		if (store.upgrade.Contains(mx, my, store.buttons) && wave.player.money >= 5 && selectedTower.upgradeLevel < 1)
+		if (store.upgrade.Contains(mx, my, store.upgradeButtons) && wave.player.money >= 5 && selectedTower.upgradeLevel < 1)
 		{
 			wave.player.money -= 10;
 			selectedTower.texture = redTower;
@@ -480,7 +488,7 @@ void App::mouseDown(float x, float y){ //Left click button down
 			std::cout << "LEVEL: " << selectedTower.upgradeLevel << std::endl;
 			std::cout << "UPGRADED: " << selectedTower.position.X << std::endl;
 		} 
-		else if (store.upgrade.Contains(mx, my, store.buttons) && wave.player.money >= 5 && selectedTower.upgradeLevel == 1)
+		else if (store.upgrade.Contains(mx, my, store.upgradeButtons) && wave.player.money >= 5 && selectedTower.upgradeLevel == 1)
 		{
 			wave.player.money -= 20;
 			selectedTower.upgradeLevel += 1;

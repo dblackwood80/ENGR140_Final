@@ -79,7 +79,7 @@ void Tower::Draw(std::vector<Tower>& tower, std::deque<Enemy> enemies)
 					bulletDelta = 0;
 					oldTime = timeBullet;
 					Bullet bull;
-					bull.init(Vector2(tower.at(i).center.X - 0.09f + b.bulletVec.size()*0.01f, tower.at(i).center.Y - 0.09f), tower.at(i).angle, 0.01f, 1, enemies.at(j).position);
+					bull.init(Vector2(tower.at(i).center.X - 0.09f + b.bulletVec.size()*0.01f, tower.at(i).center.Y - 0.09f), tower.at(i).angle, 0.01f, 1, enemies.at(j), enemies.at(j).position);
 					//bull.position.X = 0.0f;
 					//bull.position += 0.01f;
 					b.bulletVec.push_back(bull);
