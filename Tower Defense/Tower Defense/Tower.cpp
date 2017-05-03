@@ -51,44 +51,70 @@ void Tower::Draw(std::vector<Tower>& tower, std::deque<Enemy> enemies)
 
 			if (Vector2().Distance(tower.at(i).center, enemies.at(j).center) < tower.at(i).radius)
 			{
-				if (j > 0 && (Vector2().Distance(tower.at(i).center, enemies.at(j - 1).center) > tower.at(i).radius))//(tower.at(i).targets.IsDead() || ))
+				if (j > 0 && (Vector2().Distance(tower.at(i).center, enemies.at(j - 1).center) <= tower.at(i).radius))//(tower.at(i).targets.IsDead() || ))
 				{
-					std::cout << "STAY ON" << std::endl;
-				}
-				//std::cout << center.X << ", " << tower.at(0).center.X << std::endl;
-				Vector2 direction;// = center - targets.center;
+					//std::cout << "STAY ON" << std::endl;
+					Vector2 direction;// = center - targets.center;
 
-				direction.X = -tower.at(i).center.X + enemies.at(j).center.X;
-				direction.Y = -tower.at(i).center.Y + enemies.at(j).center.Y;
-				//tower.at(0).position = enemies.at(i).position;
-				//float val = 1.0f / (float)sqrt((direction.X * direction.X) + (direction.Y * direction.Y));
-				//direction.X *= val;
-				//direction.Y *= val;
-				//std::cout << enemies.at(j).center.X << ", " << enemies.at(j).center.Y << std::endl;
-				tower.at(i).angle = (float)atan2(-direction.X, direction.Y);
-				tower.at(i).angle = tower.at(i).angle * (180.0f / 3.14159f) - 180.0f;
-				//std::cout << "ANGLE: " << tower.at(i).angle << ", " << targets.center.X << std::endl;
+					direction.X = -tower.at(i).center.X + enemies.at(j - 1).center.X;
+					direction.Y = -tower.at(i).center.Y + enemies.at(j - 1).center.Y;
 
-				//bullet = tower.at(i).center;
-				//bulletVelocity = Vector2().Transform(Vector2(0, -6), Matrix().CreateRotationZ(tower.at(i).angle));
-				//bullet += bulletVelocity;
-				//bullet.Y += 0.1f;
+					tower.at(i).angle = (float)atan2(-direction.X, direction.Y);
+					tower.at(i).angle = tower.at(i).angle * (180.0f / 3.14159f) - 180.0f;
 
-				if (bulletDelta > 1000)
-				{
-					bulletDelta = 0;
-					oldTime = timeBullet;
-					Bullet bull;
-					bull.init(Vector2(tower.at(i).center.X - 0.09f + b.bulletVec.size()*0.01f, tower.at(i).center.Y - 0.09f), tower.at(i).angle, 0.01f, 1, enemies.at(j), enemies.at(j).position);
-					//bull.position.X = 0.0f;
-					//bull.position += 0.01f;
-					b.bulletVec.push_back(bull);
-					
+					if (bulletDelta > 1000)
+					{
+						bulletDelta = 0;
+						oldTime = timeBullet;
+						Bullet bull;
+						bull.init(Vector2(tower.at(i).center.X - 0.09f + b.bulletVec.size()*0.01f, tower.at(i).center.Y - 0.09f), tower.at(i).angle, 0.01f, 1, enemies.at(j - 1), enemies.at(j - 1).position);
+						//bull.position.X = 0.0f;
+						//bull.position += 0.01f;
+						b.bulletVec.push_back(bull);
 
-					std::cout << "BULLETS: " << b.bulletVec.size() << ", " << b.bulletVec.at(0).age << std::endl;
 
-				}
+						std::cout << "BULLETS: " << b.bulletVec.size() << ", " << b.bulletVec.at(0).age << std::endl;
+
+					}
 					b.Updates();
+				} 
+				else
+				{
+					//std::cout << center.X << ", " << tower.at(0).center.X << std::endl;
+					Vector2 direction;// = center - targets.center;
+
+					direction.X = -tower.at(i).center.X + enemies.at(j).center.X;
+					direction.Y = -tower.at(i).center.Y + enemies.at(j).center.Y;
+					//tower.at(0).position = enemies.at(i).position;
+					//float val = 1.0f / (float)sqrt((direction.X * direction.X) + (direction.Y * direction.Y));
+					//direction.X *= val;
+					//direction.Y *= val;
+					//std::cout << enemies.at(j).center.X << ", " << enemies.at(j).center.Y << std::endl;
+					tower.at(i).angle = (float)atan2(-direction.X, direction.Y);
+					tower.at(i).angle = tower.at(i).angle * (180.0f / 3.14159f) - 180.0f;
+					//std::cout << "ANGLE: " << tower.at(i).angle << ", " << targets.center.X << std::endl;
+
+					//bullet = tower.at(i).center;
+					//bulletVelocity = Vector2().Transform(Vector2(0, -6), Matrix().CreateRotationZ(tower.at(i).angle));
+					//bullet += bulletVelocity;
+					//bullet.Y += 0.1f;
+
+					if (bulletDelta > 1000)
+					{
+						bulletDelta = 0;
+						oldTime = timeBullet;
+						Bullet bull;
+						bull.init(Vector2(tower.at(i).center.X - 0.09f + b.bulletVec.size()*0.01f, tower.at(i).center.Y - 0.09f), tower.at(i).angle, 0.01f, 1, enemies.at(j), enemies.at(j).position);
+						//bull.position.X = 0.0f;
+						//bull.position += 0.01f;
+						b.bulletVec.push_back(bull);
+
+
+						std::cout << "BULLETS: " << b.bulletVec.size() << ", " << b.bulletVec.at(0).age << std::endl;
+
+					}
+					b.Updates();
+				}
 				/*for (int a = 0; a < b.bulletVec.size(); a++)
 				{
 

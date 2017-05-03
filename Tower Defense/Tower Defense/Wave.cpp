@@ -190,8 +190,8 @@ void Wave::EnemyUpdates()
 
 				//std::cout << "Here 2 " << DistanceToDestination() << std::endl;
 				// = points.front() - position; //Vector2 subtracting vectors was wrong implementation
-				enemies.at(i).direction.X = enemies.at(i).Waypoint().front().X - enemies.at(i).position.X;
-				enemies.at(i).direction.Y = enemies.at(i).Waypoint().front().Y - enemies.at(i).position.Y;
+				enemies.at(i).direction.X = enemies.at(i).points.front().X - enemies.at(i).position.X;
+				enemies.at(i).direction.Y = enemies.at(i).points.front().Y - enemies.at(i).position.Y;
 
 				//std::cout << "what is " << enemies.front().position.X << ", " << enemies.at(i).position.Y << std::endl;
 

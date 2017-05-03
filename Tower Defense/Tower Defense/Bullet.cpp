@@ -10,7 +10,7 @@ Bullet::~Bullet()
 
 bool Bullet::IsDead()
 {
-	return age > 500;
+	return age > 200;
 }
 
 void Bullet::init(Vector2 position, float rotation, float speed, int damage, Enemy enemies, Vector2 enemypos)
@@ -26,7 +26,7 @@ void Bullet::init(Vector2 position, float rotation, float speed, int damage, Ene
 
 void Bullet::Kill()
 {
-	this->age = 400;
+	this->age = 1000;
 }
 
 void Bullet::Updates()
@@ -44,15 +44,15 @@ void Bullet::Updates()
 		bulletVec.at(i).velocity.Y = dy;
 		bulletVec.at(i).velocity.Normalize();
 		
-		bulletVec.at(i).velocity.X = bulletVec.at(i).velocity.X * bulletVec.at(i).speed;
-		bulletVec.at(i).velocity.Y = bulletVec.at(i).velocity.Y * bulletVec.at(i).speed;
+		bulletVec.at(i).velocity.X = bulletVec.at(i).velocity.X * (bulletVec.at(i).speed * 2.0f);
+		bulletVec.at(i).velocity.Y = bulletVec.at(i).velocity.Y * (bulletVec.at(i).speed * 2.0f);
 
-		if (bulletVec.at(i).IsDead()) //&& bulletVec.size() > 1)
+		if (bulletVec.at(i).IsDead() && i > 0)//&& bulletVec.size() > 1)
 		{
 			//std::cout << "INDEX: " << i << ", " << bulletVec.size() << std::endl;
 			bulletVec.erase(bulletVec.begin() + i);
 			//std::cout << "INDEX2: " << i << ", " << bulletVec.size() << std::endl;
-			if (i > 0)
+			//if (i > 0)
 			i--;
 			//std::cout << "INDEX3: " << i << ", " << bulletVec.size() << std::endl;
 		}

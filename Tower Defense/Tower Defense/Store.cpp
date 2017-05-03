@@ -27,6 +27,8 @@ void Store::Draw(int money, float centerX, float centerY, float radius)
 
 	if (waveStarted == false)
 	{
+		glRasterPos2f(-0.13f, -0.835f);
+		glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *)"Start Wave");
 		startWave.DrawButton(startButtons);
 	}
 
