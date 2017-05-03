@@ -14,7 +14,7 @@ CreateButton button;
 //Enemy enemy1;
 Wave wave;
 //WaveManager waveManager;
-Tower tower;
+//Tower tower;
 //PlasmaTower tower;
 Tower selectedTower;
 Store store;
@@ -31,7 +31,7 @@ test a;
 Level levels(Vector2(-1.0f, 0.98f));
 
 float xChange = 0, yChange = 0;
-std::vector<Tower> towerVec;
+//std::vector<Tower> towerVec;
 std::vector<CreateButton> buttons;
 
 bool loopDone = false;
@@ -271,8 +271,8 @@ void App::draw() {
 		}
 
 		
-
-		tower.Draw(towerVec, wave.Enemies());
+		player.Draw();
+		//tower.Draw();// towerVec, wave.Enemies());
 		/*glMatrixMode(GL_TEXTURE);
 		glLoadIdentity();
 		glTranslatef(0.5f, 0.5f, 0.0f);
@@ -412,8 +412,8 @@ void App::idle()
 	{
 		wave.Updates();
 
-		if (/*!(tower.targets.alive) && */wave.Enemies().size() > 0 && towerVec.size() > 0)
-		{
+		//if (  /*!(tower.targets.alive) && wave.Enemies().size() > 0 && player.towers.size() > 0*/)
+		//{
 
 			//std::cout << "INSIDE: " << wave.Enemies().front().position.X << std::endl;
 			std::vector<Enemy> enemies;
@@ -422,10 +422,11 @@ void App::idle()
 				enemies.push_back(wave.Enemies().at(p));
 				//tower.stuff.push_back(enemies.at(p));
 			}
-			tower.GetEnemy(wave.Enemies(), towerVec);
-			tower.Updates(wave.Enemies());
+			//tower.GetEnemy(wave.Enemies());
+			player.Updates(wave.Enemies());
+			//tower.Updates();
 			//std::cout <<"SIZE: " << enemies.size() << ", " << enemies.at(0).position.X + tower.center.X << std::endl;
-		}
+		//}
 
 		//waveManager.Updates();
 
@@ -466,8 +467,8 @@ void App::mouseDown(float x, float y){ //Left click button down
 			store.init(wave);
 			store.waveStarted = true;
 		}
-
-		if (tower.InBounds(my))
+		
+		if (player.InBounds(my))
 		{
 			store.showStats = false;
 		}
@@ -478,11 +479,11 @@ void App::mouseDown(float x, float y){ //Left click button down
 			selectedTower.texture = redTower;
 			selectedTower.upgradeLevel += 1;
 
-			for (int t = 0; t < towerVec.size(); t++)
+			for (int t = 0; t < player.towers.size(); t++)
 			{
-				if (towerVec.at(t).position.X == selectedTower.position.X && towerVec.at(t).position.Y == selectedTower.position.Y)
+				if (player.towers.at(t).position.X == selectedTower.position.X && player.towers.at(t).position.Y == selectedTower.position.Y)
 				{
-					towerVec.at(t) = selectedTower;					
+					player.towers.at(t) = selectedTower;
 				}
 			}
 			std::cout << "LEVEL: " << selectedTower.upgradeLevel << std::endl;
@@ -494,38 +495,41 @@ void App::mouseDown(float x, float y){ //Left click button down
 			selectedTower.upgradeLevel += 1;
 			selectedTower.radius += 0.1f;
 
-			for (int t = 0; t < towerVec.size(); t++)
+			for (int t = 0; t < player.towers.size(); t++)
 			{
-				if (towerVec.at(t).position.X == selectedTower.position.X && towerVec.at(t).position.Y == selectedTower.position.Y)
+				if (player.towers.at(t).position.X == selectedTower.position.X && player.towers.at(t).position.Y == selectedTower.position.Y)
 				{
-					towerVec.at(t) = selectedTower;
+					player.towers.at(t) = selectedTower;
 				}
 			}
 		}
 	}
 
 
-	if (currentMenu == Play && tower.InBounds(y) && !(tower.Contains(mx, my, towerVec)) && towerVec.size() > 0 && !(levels.CheckPlacement(mx, my, levels.AllPathPoints())) && wave.player.money >= 10)
+	if (currentMenu == Play && player.InBounds(y) && !(player.Contains(mx, my)) && player.towers.size() > 0 && !(levels.CheckPlacement(mx, my, levels.AllPathPoints())) && wave.player.money >= 10)
 	{
 		wave.player.money -= 10;
 		std::cout << "Push 1" << std::endl;
 		//towerVec.push_back(Tower(greenTower, Vector2(0.0f, 0.0f)));
 		Tower push;
-		push.init(greenTower, Vector2(mx, my));
-		towerVec.push_back(push);
-		player.Updates();
+		push.init(greenTower, Vector2(mx, my), mx, my);
+		//towerVec.push_back(push);
+		player.towers.push_back(push);
+		player.Updates(wave.Enemies());
 	}
-	else if(currentMenu == Play && tower.InBounds(y) && towerVec.size() <= 0 && !(levels.CheckPlacement(mx, my, levels.AllPathPoints())) && wave.player.money >= 10)
+	else if(currentMenu == Play && player.InBounds(y) && player.towers.size() <= 0 && !(levels.CheckPlacement(mx, my, levels.AllPathPoints())) && wave.player.money >= 10)
 	{		
 		wave.player.money -= 10;
 		std::cout << "Push 2" << std::endl;
 		Tower push;
-		push.init(greenTower, Vector2(mx, my));
-		towerVec.push_back(push);
+		push.init(greenTower, Vector2(mx, my), mx, my);
+		//towerVec.push_back(push);
+		player.towers.push_back(push);
+		player.Updates(wave.Enemies());
 	}
-	else if (currentMenu == Play && tower.InBounds(y) && tower.Contains(mx, my, towerVec) && towerVec.size() > 0)
+	else if (currentMenu == Play && player.InBounds(y) && player.Contains(mx, my) && player.towers.size() > 0)
 	{
-		selectedTower = tower.ContainsTower(mx, my, towerVec);
+		selectedTower = player.ContainsTower(mx, my);
 		//tower.DeleteTower(mx, my, towerVec);
 		std::cout << "OPTIONS POP UP" << std::endl;
 
@@ -567,7 +571,7 @@ void App::keyPress(unsigned char key) {
 
 	if (key == 32)
 	{
-		std::cout << tower.angle << std::endl;
+		//std::cout << tower.angle << std::endl;
 		if (yChange < 0.535f)
 		{
 			yChange += .005f;

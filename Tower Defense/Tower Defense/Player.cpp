@@ -15,12 +15,6 @@ Player::~Player()
 {
 }
 
-void Player::mouseMove(float x, float y)
-{
-	this->mouseX = x;
-	this->mouseY = y;
-}
-
 int Player::Money()
 {
 	return money;
@@ -31,57 +25,64 @@ int Player::Lives()
 	return lives;
 }
 
-float Player::ConvertX(float& x)
+void Player::Draw()
 {
-	// Converting window coordinates [0..width] x [0..height] to [-1..1] x [-1..1]
-	x = (2.0f*(x / float(768))) - 1.0f;
-
-	return x;
-}
-
-float Player::ConvertY(float &y)
-{
-	y = 1.0f - (2.0f*(y / float(768)));
-	// Take care of issue in Windows where y coordinate is a little off
-#if defined WIN32
-	y -= 0.03;
-#endif
-
-	return y;
-}
-
-bool Player::ValidSpot()
-{
-	bool inBound = cellX >= 0 && cellY >= 0 && cellX < 11 && cellY < 9;
-	bool areaClear = true;
-
-	std::cout << "WHat" << mouseX << ", " << mouseY << std::endl;
-
-	/*for (int i = 0; i < towers.size(); i++)
+	for (int i = 0; i < towers.size(); i++)
 	{
-		
-		areaClear = (towers.at(i).position != Vector2(ConvertX(mouseX), ConvertY(mouseY)));
-
-		if (!areaClear)
-			break;
-	}*/
-
-//	bool onPath = (level.Index(cellX, cellY) != 1);
-
-	return inBound && areaClear;//&& onPath;
+		towers.at(i).Draw();
+	}
 }
 
-void Player::Updates()
+bool Player::InBounds(float y)
 {
-	if (ValidSpot())
+	if (y > -0.62f + height)
 	{
-		//Tower tower;// (towerTexture, Vector2(mouseX, mouseY));
-		//tower.init(towerTexture, Vector2(mouseX, mouseY));
-		//towers.push_back(tower);
+		return true;
 	}
 
-	//for (int i = 0; i < towers.size(); i++)
-	//{
+	return false;
+}
 
-	//}
+bool Player::Contains(float x, float y)
+{
+	for (int i = 0; i < towers.size(); i++)
+	{
+		if (x >= towers.at(i).position.X - (towers.at(i).width / 2) && x < towers.at(i).position.X + (towers.at(i).width / 2))
+		{
+			if (y > towers.at(i).position.Y - (towers.at(i).height / 2) && y <= towers.at(i).position.Y + (towers.at(i).height / 2))
+			{
+				return true;
+			}
+
+		}
+	}
+
+	return false;
+}
+
+Tower Player::ContainsTower(float x, float y)
+{
+	for (int i = 0; i < towers.size(); i++)
+	{
+		if (x >= towers.at(i).position.X - (towers.at(i).width / 2) && x < towers.at(i).position.X + (towers.at(i).width / 2))
+		{
+			if (y > towers.at(i).position.Y - (towers.at(i).height / 2) && y <= towers.at(i).position.Y + (towers.at(i).height / 2))
+			{
+				return towers.at(i);
+			}
+
+		}
+	}
+}
+
+void Player::Updates(std::deque<Enemy> enemies)
+{
+	for (int i = 0; i < towers.size(); i++)
+	{
+		if (towers.at(i).Target() == NULL)
+		{
+			towers.at(i).GetEnemy(enemies);
+		}
+		towers.at(i).Updates();
+	}
 }

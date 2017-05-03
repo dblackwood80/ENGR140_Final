@@ -4,7 +4,6 @@
 #include <vector>
 //#include "freeglut.h"
 #include "Vector2.h"
-#include "Wave.h"
 #include "Bullet.h"
 //#include "Sprite.h"
 //#include "Enemy.h"
@@ -42,7 +41,7 @@ public:
 
 	//std::vector<Enemy> targets;
 	
-	Enemy targets;
+	Enemy *targets;
 
 	float angle = 0;
 
@@ -58,8 +57,8 @@ public:
 	~Tower();
 	//Tower(GLuint texture, Vector2 posi);
 
-	void init(GLuint texture, Vector2 position);
-	void Draw(std::vector<Tower>& tower, std::deque<Enemy> enemies);
+	void init(GLuint texture, Vector2 position, float xx, float yy);
+	void Draw();//std::vector<Tower>& tower, std::deque<Enemy> enemies);
 	bool Contains(float x, float y, std::vector<Tower>& tower);
 	Tower ContainsTower(float x, float y, std::vector<Tower>& tower);
 	bool InBounds(float y);
@@ -71,15 +70,17 @@ public:
 
 	float Radius();
 
+	float x1, y1, t1;
+
 	bool IsInRange(Vector2 position);
 
 	Enemy *Target();
 
-	void GetEnemy(std::deque<Enemy> enemies, std::vector<Tower> towers);
+	void GetEnemy(std::deque<Enemy> enemies);
 
 	void RotateToTarget();
 
-	void Updates(std::deque<Enemy> enemies);
+	void Updates();
 
 
 };

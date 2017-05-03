@@ -1,13 +1,15 @@
-﻿  Tower.cpp
-..\Tower.cpp(42): warning C4018: '<': signed/unsigned mismatch
-..\Tower.cpp(45): warning C4018: '<': signed/unsigned mismatch
-..\Tower.cpp(159): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-..\Tower.cpp(161): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-..\Tower.cpp(205): warning C4018: '<': signed/unsigned mismatch
-..\Tower.cpp(221): warning C4018: '<': signed/unsigned mismatch
-..\Tower.cpp(246): warning C4018: '<': signed/unsigned mismatch
-..\Tower.cpp(293): warning C4018: '<': signed/unsigned mismatch
-..\Tower.cpp(295): warning C4018: '<': signed/unsigned mismatch
-c:\users\11\desktop\git_version_final\engr140_final\tower defense\tower defense\tower.cpp(232): warning C4715: 'Tower::ContainsTower': not all control paths return a value
+﻿  App.cpp
+..\App.cpp(173): warning C4018: '<': signed/unsigned mismatch
+..\App.cpp(175): warning C4018: '<': signed/unsigned mismatch
+..\App.cpp(420): warning C4018: '<': signed/unsigned mismatch
+..\App.cpp(482): warning C4018: '<': signed/unsigned mismatch
+..\App.cpp(498): warning C4018: '<': signed/unsigned mismatch
+  Player.cpp
+..\Player.cpp(30): warning C4018: '<': signed/unsigned mismatch
+..\Player.cpp(48): warning C4018: '<': signed/unsigned mismatch
+..\Player.cpp(65): warning C4018: '<': signed/unsigned mismatch
+..\Player.cpp(80): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
+c:\users\11\desktop\git_version_final\engr140_final\tower defense\tower defense\player.cpp(76): warning C4715: 'Player::ContainsTower': not all control paths return a value
   glutapp.vcxproj -> C:\Users\11\Desktop\GIT_Version_Final\ENGR140_Final\Tower Defense\Tower Defense\visualc15\obj\glutapp_Release\glutapp.exe
   glutapp.vcxproj -> obj\glutapp_Release\glutapp.pdb (Full PDB)

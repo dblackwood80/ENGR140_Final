@@ -1,7 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 #include <vector>
-//#include "Tower.h"
+#include "Tower.h"
 #include "Level.h"
 #include "GlutApp.h"
 
@@ -12,22 +12,21 @@ public:
 	void init(Level level, GLuint towerTexture);
 	~Player();
 
-
-
-	void mouseMove(float x, float y);
-	float mouseX, mouseY;
-
 	int Money();
 
 	int Lives();
 
-	float ConvertX(float & x);
+	void Draw();
 
-	float ConvertY(float & y);
+	bool InBounds(float y);
 
-	bool ValidSpot();
+	bool Contains(float x, float y);
 
-	void Updates();
+	float width = 0.18f, height = 0.18f;
+
+	Tower ContainsTower(float x, float y);
+
+	void Updates(std::deque<Enemy> enemies);
 
 	GlutApp* app;
 
@@ -36,7 +35,7 @@ public:
 
 	int cellX, cellY;
 
-	//std::vector<Tower> towers;
+	std::vector<Tower> towers;
 	Level level;
 
 	GLuint towerTexture;

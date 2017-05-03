@@ -60,7 +60,7 @@ void Bullet::Updates()
 		bulletVec.at(i).age++;
 		bulletVec.at(i).position += bulletVec.at(i).velocity;
 		//if (bulletVec.at(i).position == bulletVec.at(i).position)
-		std::cout << "VELOCITY: " << bulletVec.at(i).speed << ", " << bulletVec.at(i).velocity.X << ", " << bulletVec.at(i).velocity.Y << std::endl;
+		//std::cout << "VELOCITY: " << bulletVec.at(i).speed << ", " << bulletVec.at(i).velocity.X << ", " << bulletVec.at(i).velocity.Y << std::endl;
 	}
 	Draw();
 }

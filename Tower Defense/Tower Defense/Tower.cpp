@@ -5,7 +5,7 @@
 float width = 0.18f;
 float height = 0.18f;
 
-void Tower::init(GLuint texture, Vector2 position)
+void Tower::init(GLuint texture, Vector2 position, float xx, float yy)
 {
 	//center = Vector2(position.X + 0.09f, position.Y + 0.09f);
 	this->texture = texture;
@@ -13,7 +13,10 @@ void Tower::init(GLuint texture, Vector2 position)
 	this->position.Y = position.Y;
 	this->center.X = position.X + 0.09f;
 	this->center.Y = position.Y + 0.09f;
-	//std::cout << "POSITION: " << position.X << ", " << position.Y << std::endl;
+	x1 = xx;
+	y1 = yy;
+	t1 = 55;
+	std::cout << "POSITION: " << position.X << ", " << position.Y << std::endl;
 	radius = 0.35f;
 	upgradeLevel = 0;
 	//angle += 90;
@@ -28,126 +31,28 @@ Tower::~Tower()
 {
 }
 
-void Tower::Draw(std::vector<Tower>& tower, std::deque<Enemy> enemies)
+void Tower::Draw()//std::vector<Tower>& tower, std::deque<Enemy> enemies)
 {
-	//glBindTexture(GL_TEXTURE_2D, texture);
+
 	//time = 0;
-	int timeBullet = glutGet(GLUT_ELAPSED_TIME);
+	/*int timeBullet = glutGet(GLUT_ELAPSED_TIME);
 
 	bulletDelta = timeBullet - oldTime;
-	//glEnable(GL_TEXTURE_2D);
-	//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	//std::cout << "MY ANGLE: " << angle << std::endl;
-	
-	for (int i = 0; i < tower.size(); i++)
-	{
-		//std::cout << enemies.at(0).position.X << std::endl;
-		for (int j = 0; j < enemies.size(); j++)
-		{
-			//std::cout << "DISTANCE: " << Vector2().Distance(tower.at(i).center, targets.center) << ", " << tower.at(i).radius << ", " << targets.center.X << ", " << targets.center.Y << std::endl;
-
-			enemies.at(j).center.X = enemies.at(j).position.X + 0.09f;
-			enemies.at(j).center.Y = enemies.at(j).position.Y + 0.09f;
-
-			if (Vector2().Distance(tower.at(i).center, enemies.at(j).center) < tower.at(i).radius)
-			{
-				if (j > 0 && (Vector2().Distance(tower.at(i).center, enemies.at(j - 1).center) <= tower.at(i).radius))//(tower.at(i).targets.IsDead() || ))
-				{
-					//std::cout << "STAY ON" << std::endl;
-					Vector2 direction;// = center - targets.center;
-
-					direction.X = -tower.at(i).center.X + enemies.at(j - 1).center.X;
-					direction.Y = -tower.at(i).center.Y + enemies.at(j - 1).center.Y;
-
-					tower.at(i).angle = (float)atan2(-direction.X, direction.Y);
-					tower.at(i).angle = tower.at(i).angle * (180.0f / 3.14159f) - 180.0f;
 
 					if (bulletDelta > 1000)
 					{
 						bulletDelta = 0;
 						oldTime = timeBullet;
 						Bullet bull;
-						bull.init(Vector2(tower.at(i).center.X - 0.09f + b.bulletVec.size()*0.01f, tower.at(i).center.Y - 0.09f), tower.at(i).angle, 0.01f, 1, enemies.at(j - 1), enemies.at(j - 1).position);
+						bull.init(Vector2(center.X - 0.09f + b.bulletVec.size()*0.01f, center.Y - 0.09f), angle, 0.01f, 1, *targets, targets->position);
 						//bull.position.X = 0.0f;
 						//bull.position += 0.01f;
 						b.bulletVec.push_back(bull);
 
-
-						std::cout << "BULLETS: " << b.bulletVec.size() << ", " << b.bulletVec.at(0).age << std::endl;
-
 					}
-					b.Updates();
-				} 
-				else
-				{
-					//std::cout << center.X << ", " << tower.at(0).center.X << std::endl;
-					Vector2 direction;// = center - targets.center;
-
-					direction.X = -tower.at(i).center.X + enemies.at(j).center.X;
-					direction.Y = -tower.at(i).center.Y + enemies.at(j).center.Y;
-					//tower.at(0).position = enemies.at(i).position;
-					//float val = 1.0f / (float)sqrt((direction.X * direction.X) + (direction.Y * direction.Y));
-					//direction.X *= val;
-					//direction.Y *= val;
-					//std::cout << enemies.at(j).center.X << ", " << enemies.at(j).center.Y << std::endl;
-					tower.at(i).angle = (float)atan2(-direction.X, direction.Y);
-					tower.at(i).angle = tower.at(i).angle * (180.0f / 3.14159f) - 180.0f;
-					//std::cout << "ANGLE: " << tower.at(i).angle << ", " << targets.center.X << std::endl;
-
-					//bullet = tower.at(i).center;
-					//bulletVelocity = Vector2().Transform(Vector2(0, -6), Matrix().CreateRotationZ(tower.at(i).angle));
-					//bullet += bulletVelocity;
-					//bullet.Y += 0.1f;
-
-					if (bulletDelta > 1000)
-					{
-						bulletDelta = 0;
-						oldTime = timeBullet;
-						Bullet bull;
-						bull.init(Vector2(tower.at(i).center.X - 0.09f + b.bulletVec.size()*0.01f, tower.at(i).center.Y - 0.09f), tower.at(i).angle, 0.01f, 1, enemies.at(j), enemies.at(j).position);
-						//bull.position.X = 0.0f;
-						//bull.position += 0.01f;
-						b.bulletVec.push_back(bull);
-
-
-						std::cout << "BULLETS: " << b.bulletVec.size() << ", " << b.bulletVec.at(0).age << std::endl;
-
-					}
-					b.Updates();
-				}
-				/*for (int a = 0; a < b.bulletVec.size(); a++)
-				{
-
-				}*/
-				
-				/*for (int k = 0; k < tower.size(); k++)
-				{
-					if (/*delta > 750 && Vector2().Distance(tower.at(k).center, bullet) <= tower.at(k).radius)
-					{
-
-						std::cout << "DELTA: " << delta << std::endl;
-						glPointSize(10);
-						glBegin(GL_POINTS);
-
-						glVertex2f(bullet.X, bullet.Y);
-
-						glEnd();
-
-						delta = 0;
-						oldTime = time;
-					}*/
-				//}
-
-			}
-		}
-
-		if (enemies.size() == 0)
-		{
-			std::cout << "TRUE COUNT: " << b.bulletVec.size() << std::endl;
-			b.bulletVec.clear();
-		}
+					b.Updates();*/
 		
-		glBindTexture(GL_TEXTURE_2D, tower.at(i).texture);
+		glBindTexture(GL_TEXTURE_2D, texture);
 
 		glEnable(GL_TEXTURE_2D); // This line and next need to be in loop
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -155,24 +60,24 @@ void Tower::Draw(std::vector<Tower>& tower, std::deque<Enemy> enemies)
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		glPushMatrix();
-
-		glTranslatef(tower.at(i).center.X - 0.09, tower.at(i).center.Y - 0.09, 0.0f);
-		glRotatef(tower.at(i).angle, 0.0f, 0.0f, 1.0f);
-		glTranslatef(-tower.at(i).center.X + 0.09, -tower.at(i).center.Y + 0.09, 0.0f);
+		//std::cout << "STUFF: " << angle << ", " << center.X << ", " << center.Y << std::endl;
+		glTranslatef(center.X - 0.09, center.Y - 0.09, 0.0f);
+		glRotatef(angle, 0.0f, 0.0f, 1.0f);
+		glTranslatef(-center.X + 0.09, -center.Y + 0.09, 0.0f);
 
 		glBegin(GL_QUADS);
 
 		glTexCoord2f(0.0, 0.0);
-		glVertex2f(tower.at(i).center.X, tower.at(i).center.Y);
+		glVertex2f(center.X, center.Y);
 
 		glTexCoord2f(0.0, 1.0);
-		glVertex2f(tower.at(i).center.X, tower.at(i).center.Y - 0.18f);
+		glVertex2f(center.X, center.Y - 0.18f);
 
 		glTexCoord2f(1.0, 1.0);
-		glVertex2f(tower.at(i).center.X - 0.18f, tower.at(i).center.Y - 0.18f);
+		glVertex2f(center.X - 0.18f, center.Y - 0.18f);
 
 		glTexCoord2f(1.0, 0.0);
-		glVertex2f(tower.at(i).center.X - 0.18f, tower.at(i).center.Y);
+		glVertex2f(center.X - 0.18f, center.Y);
 		glEnd();
 
 		glPopMatrix();
@@ -186,15 +91,15 @@ void Tower::Draw(std::vector<Tower>& tower, std::deque<Enemy> enemies)
 		for (int j = 0; j < 360; j++)
 		{
 			double angle = 3.14159 * 2 / 360;
-			double x = tower.at(i).center.X + (0.3*sin(angle));
-			double y = tower.at(i).center.Y + (0.3*cos(angle));
+			double x = center.X + (0.3*sin(angle));
+			double y = center.Y + (0.3*cos(angle));
 			glVertex2d(x, y);
 			//float degInRad = j * (3.14159f / 180.0f);
 			//glVertex2f(cos(degInRad) * radius, sin(degInRad) * radius);
 		}
 
 		glEnd();
-	}
+	//}
 
 	//glFlush();
 	//glutSwapBuffers();
@@ -281,26 +186,24 @@ bool Tower::IsInRange(Vector2 position)
 
 Enemy *Tower::Target()
 {
-	return &targets;
+	return targets;
 }
 
-void Tower::GetEnemy(std::deque<Enemy> enemies, std::vector<Tower> towers)
+void Tower::GetEnemy(std::deque<Enemy> enemies)
 {
-	//std::cout << towers.at(0).center.X << std::endl;
-	//targets = NULL;
+	targets = NULL;
+
 	float smallestRange = radius;
 
 	for (int i = 0; i < enemies.size(); i++)
 	{
-		for (int j = 0; j < towers.size(); j++)
+		if (Vector2().Distance(center, enemies.at(i).center) < smallestRange)
 		{
-
-			if (Vector2().Distance(towers.at(j).center, enemies.at(i).center) < smallestRange)
-			{
-				smallestRange = Vector2().Distance(center, enemies.at(i).center);
-				targets = enemies.at(i);
-				std::cout << "CENTERS: " << enemies.at(i).center.X << ", " << targets.center.X << std::endl;
-			}
+			smallestRange = Vector2().Distance(center, enemies.at(i).center);
+			*targets = enemies.at(i);
+			targets->center.X = targets->position.X + 0.09f;
+			targets->center.Y = targets->position.Y + 0.09f;
+			std::cout << "CENTERS: " << enemies.at(i).center.X << ", " << targets->center.X << std::endl;
 		}
 	}
 }
@@ -309,27 +212,35 @@ void Tower::RotateToTarget()
 {
 	Vector2 direction;// = center - targets.center;
 	
-	direction.X = center.X - targets.center.X;
-	direction.Y = center.Y - targets.center.Y;
+	direction.X = -center.X + targets->center.X;
+	direction.Y = -center.Y + targets->center.Y;
 	
 	float val = 1.0f / (float)sqrt((direction.X * direction.X) + (direction.Y * direction.Y));
 	direction.X *= val;
 	direction.Y *= val;
 
+	angle = (float)atan2(-direction.X, direction.Y);
+	angle = angle * (180.0f / 3.14159f) - 180.0f;
+	angle = 0;
 	//angle = (float)atan2(-direction.X, direction.Y);
-	angle += 90;
+	//angle += 90;
 }
 
-void Tower::Updates(std::deque<Enemy> enemies)
+void Tower::Updates()
 {
 	time = glutGet(GLUT_ELAPSED_TIME);
 
 	//delta = time - oldTime;
 
+	if (Target() == NULL)
+	{
+		std::cout << "VERY NULL" << std::endl;
+	}
+
 	//angle = 90;
 	if (Target() != NULL)
 	{
-		//std::cout << "rotate" << std::endl;
+		std::cout << "rotate" << std::endl;
 		RotateToTarget();
 
 		/*if (!IsInRange(enemies.at(0).center))
