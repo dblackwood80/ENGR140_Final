@@ -14,13 +14,16 @@ public:
 	CreateButton();
 	~CreateButton();
 	CreateButton(float x, float y, float width, float height);
+	CreateButton(float x, float y, float width, float height, GLuint tex);
 
 	void init(float x, float y, float width, float height, GLuint texture);
 
 	bool Contains(float x, float y, std::vector<CreateButton>& button);
+	bool Contains(float x, float y, CreateButton button);
+	GLuint ContainsTexture(float x, float y, std::vector<CreateButton>& button);
 	void DrawButton(std::vector<CreateButton>& button);
 
-	void DrawTexturedButton(std::vector<CreateButton>& button, GLuint texture);
+	void DrawTexturedButton(CreateButton button, GLuint texture);
 
 	GLuint texture;
 

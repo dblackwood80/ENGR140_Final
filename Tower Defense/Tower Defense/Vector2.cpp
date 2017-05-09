@@ -44,8 +44,12 @@ void Vector2::Normalize()
 
 Vector2 Vector2::Transform(Vector2 position, Matrix matrix)
 {
-	Transform( position, matrix, position);
-	return position;
+	//Transform( position, matrix, position);
+
+
+
+	return Vector2((position.X * matrix.M11) + (position.Y * matrix.M21) + matrix.M41,
+		(position.X * matrix.M12) + (position.Y * matrix.M22) + matrix.M42);
 }
 
 Vector2 Vector2::Subtract(Vector2 value1, Vector2 value2)
@@ -72,6 +76,20 @@ Vector2 Vector2::operator -(Vector2 value)// not right look ate enemy.cpp update
 {
 	value.X = -value.X;
 	value.Y = -value.Y;
+	return value;
+}
+
+Vector2 Vector2::operator +(float value)
+{
+	X += value;
+	Y += value;
+	return Vector2(X, Y);
+}
+
+Vector2 Vector2::operator +(Vector2 value)
+{
+	value.X += X;
+	value.Y += Y;
 	return value;
 }
 

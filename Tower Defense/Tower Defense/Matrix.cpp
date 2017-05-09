@@ -32,15 +32,18 @@ Matrix::~Matrix()
 
 Matrix Matrix::Identity()
 {
-	return Matrix(1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1, 0,
-				0, 0, 0, 1);
+	return Matrix
+	(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
 }
 
 Matrix Matrix::CreateRotationZ(double radians)
 {
-	Matrix returnMatrix = Matrix().Identity();
+	/*Matrix returnMatrix = Matrix().Identity();
 
 	double val1 = (double)cos(radians);
 	double val2 = (double)sin(radians);
@@ -50,5 +53,13 @@ Matrix Matrix::CreateRotationZ(double radians)
 	returnMatrix.M21 = -val2;
 	returnMatrix.M22 = val1;
 
-	return returnMatrix;
+	return returnMatrix;*/
+
+	return Matrix
+	(
+		cos(radians), sin(radians), 0, 0,
+		-sin(radians), cos(radians), 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
 }

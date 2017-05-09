@@ -57,7 +57,7 @@ void Store::Draw(int money, float centerX, float centerY, float radius)
 		glEnable(GL_LINE_SMOOTH);
 		for (double d = 0; d < max; d += inc)
 		{
-			glVertex2f(cos(d) * (radius) + centerX-0.09, sin(d) * (radius) + centerY-0.09);
+			glVertex2f(cos(d) * (radius * 0.6f) + centerX-0.09, sin(d) * (radius * 0.6f) + centerY+0.07);
 		}
 
 		glEnd();
@@ -81,4 +81,9 @@ void Store::Draw(int money, float centerX, float centerY, float radius)
 void Store::init(Wave wave)
 {
 	this->wave = wave;
+}
+
+void Store::Reset()
+{
+
 }

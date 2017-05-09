@@ -31,6 +31,8 @@ public:
 	double max = 2 * 3.14159;
 
 	bool waveStarted = false;
+
+	void Reset();
 };
 
 #endif // !STORE_H

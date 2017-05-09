@@ -13,10 +13,13 @@ public:
 
 	void init(GLuint Texture, Vector2 position);
 
-	void Update();
+	void draw();
+
+	//void Update();
 
 	int bulletSize;
 
+	std::vector<Tower> tows;
 };
 
 

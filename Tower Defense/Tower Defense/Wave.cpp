@@ -32,25 +32,27 @@ bool Wave::getAtEnd()
 	return atEnd;
 }
 
-std::deque<Enemy> Wave::Enemies()
+/*std::deque<Enemy> Wave::Enemies()
 {
 	return enemies;
-}
+}*/
 
 void Wave::AddEnemy()
 {
 	Enemy enemy;
-	enemy.init(enemyTexture, level.Waypoints().front(), 50, 1, speed);
+	enemy.init(enemyTexture, level.Waypoints().front(), 50, 5, speed);
 	enemy.SetWaypoints(level.Waypoints());
+	enemy.ID = enemies.size() + 1;
 	enemies.push_back(enemy);
 	spawnTimer = 0;
 	enemiesSpawned++;
-	//std::cout << "spawned: " << enemiesSpawned << ", " << enemies.size() << std::endl;
+	//std::cout << "spawned: " << enemy.ID << ", " << enemies.size() << std::endl;
 }
 
 void Wave::Start()
 {
 	spawning = true;
+	//wavesCount++;
 }
 
 void Wave::Updates()
@@ -64,8 +66,24 @@ void Wave::Updates()
 
 	deltaSpeed = timeSpeed - oldSpeedTime;
 
+	/*for (int t = 0; t < player.towers.size(); t++)
+	{
+		for (int j = 0; j < enemies.size(); j++)
+		{
+			enemies.at(j).center.X = enemies.at(j).position.X + 0.09f;
+			enemies.at(j).center.Y = enemies.at(j).position.Y - 0.09f;
+		}
+
+		player.towers.at(t).GetEnemy(enemies);
+		player.towers.at(t).Updates();
+	}*/
+
+	if (player.towers.size() > 0 && player.towers.at(0).targs.size() > 0)
+	std::cout << "TRIED " << player.towers.at(0).targs.at(0).currentHealth << std::endl;
+
 	for (int i = 0; i < enemies.size(); i++)
 	{
+		//enemies = player.
 		if (enemies.size() >= 1)
 		{
 			enemies.at(i).speed = (speed * deltaSpeed) / (20 * enemies.size());
@@ -79,14 +97,25 @@ void Wave::Updates()
 			oldSpeedTime = timeSpeed;
 		}
 		
-		Enemy enemy = enemies.at(i);
+		//Enemy enemy = enemies.at(i);
 		//enemy.Updates();
 		EnemyUpdates();
 
-		if (enemy.IsDead())
+		if (enemies.size() > 0 && enemies.at(0).ID == 1)
+		{
+			//enemies.at(i).currentHealth -= 0.1f;
+			//std::cout << "CAN TRY HERE " << enemies.at(0).currentHealth << std::endl;
+		}
+
+		if (enemies.at(i).currentHealth <= 0)
+		{
+			enemies.at(i).alive = false;
+		}
+
+		if (enemies.at(i).IsDead())
 		{
 			//std::cout << "Made this 1" << std::endl;
-			if (enemy.currentHealth > 0)
+			if (enemies.at(i).currentHealth > 0)
 			{
 				//std::cout << "Made this 2" << std::endl;
 				atEnd = true;
@@ -95,7 +124,7 @@ void Wave::Updates()
 			}
 			else
 			{
-				player.money += enemy.bountyGiven;
+				player.money += enemies.at(i).bountyGiven;
 				std::cout << player.money << std::endl;
 			}
 			//std::cout << "SPEED: " << enemies.at(i).velocity.X << ", " << enemies.at(i).velocity.Y << std::endl;
@@ -108,6 +137,11 @@ void Wave::Updates()
 	if (enemiesSpawned == numOfEnemies)
 	{
 		spawning = false;
+	}
+
+	if (wavesCount == 1 && enemies.size() == 0)
+	{
+		wavesCount++;
 	}
 
 	if (spawning)

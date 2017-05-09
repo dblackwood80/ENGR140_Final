@@ -26,7 +26,7 @@ public:
 
 	bool IsDead();
 
-	int ran = 0;
+	int ID = 0;
 
 	int BountyGiven();
 
@@ -45,7 +45,7 @@ public:
 
 	float startHealth, currentHealth;
 	bool alive = true;
-	float speed = 0.003f;
+	float speed = 0.005f;
 	int bountyGiven;
 
 	int numOfPoints;

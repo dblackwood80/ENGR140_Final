@@ -15,7 +15,7 @@ Wave WaveManager::CurrentWave()
 
 std::deque<Enemy> WaveManager::Enemies()
 {
-	return CurrentWave().Enemies();
+	return CurrentWave().enemies;
 }
 
 int WaveManager::Round()

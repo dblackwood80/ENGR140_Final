@@ -16,9 +16,15 @@ void PlasmaTower::init(GLuint Texture, Vector2 position)
 	this->radius = 0.03f;
 }
 
-void PlasmaTower::Update()
+void PlasmaTower::draw()
 {
-	if (delta > 750 && Target() != NULL)
+	
+}
+
+
+/*void PlasmaTower::Update()
+{
+	if (delta > 750 && targs->size() > 0)
 	{
 		Bullet bullet;
 		//bullet.init(Vector2().Subtract(center, Vector2(0.09)), angle, 6, damage, bullet.enemyPosition);
@@ -27,7 +33,7 @@ void PlasmaTower::Update()
 		delta = 0;
 		oldTime = time;
 		bulletSize = bullet.bulletVec.size();
-		bullet.Updates();
+		//bullet.Updates();
 	}
 
 	for (int i = 0; i < bulletSize; i++)
@@ -35,7 +41,7 @@ void PlasmaTower::Update()
 		Bullet bullet = bullet.bulletVec[i];
 
 		bullet.SetRotation(angle);
-		bullet.Updates();
+		//bullet.Updates();
 
 		if (!IsInRange(bullet.center))
 		{
@@ -48,4 +54,4 @@ void PlasmaTower::Update()
 			i--;
 		}
 	}
-}
+}*/

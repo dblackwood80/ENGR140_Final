@@ -30,6 +30,10 @@ public:
 	GLuint redTower;
     GLuint path;    
 	GLuint enemyTexture1;
+
+	GLuint Level1;
+	GLuint exits, how;
+	GLuint howScreen;
     
     TexRect* scene;
     //TexRect* background;

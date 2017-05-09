@@ -32,6 +32,10 @@ public:
 
 	Vector2 operator-(Vector2 value);
 
+	Vector2 operator+(float value);
+
+	Vector2 operator+(Vector2 value);
+
 	Vector2 Multiply(Vector2 value1, double scaleFactor);
 
 	Vector2 operator+=(Vector2 value1);

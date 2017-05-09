@@ -181,7 +181,7 @@ void Enemy::Updates()
 			velocity.Y = direction.Y * speed;
 			//std::cout << position.X << ", " << position.Y << std::endl;
 			position.X = position.X + velocity.X;
-			ran += 1;
+
 			position.Y = position.Y + velocity.Y;
 			//std::cout << position.X << ", " << position.Y << std::endl;
 			//std::cout << "3 " << velocity.Y << ", " << position.Y << ", " << ran << std::endl;

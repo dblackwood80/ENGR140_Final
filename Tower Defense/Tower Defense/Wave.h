@@ -24,7 +24,7 @@ private:
 	Level level;
 
 	GLuint enemyTexture;
-	std::deque<Enemy> enemies;
+	
 
 	float angleFacing;
 
@@ -37,7 +37,7 @@ public:
 	int WaveNumber();
 	bool getAtEnd();
 
-	std::deque<Enemy> Enemies();
+	//std::deque<Enemy> Enemies();
 
 	int run2 = 0;
 
@@ -48,7 +48,7 @@ public:
 	void DrawWaves();
 
 	void EnemyUpdates();
-
+	int wavesCount = 1;
 	Player player;
 
 	int oldSpeedTime = 0, oldTime = 0;
@@ -56,6 +56,8 @@ public:
 	//std::vector<Vector2> points;
 
 	//bool alive = true;
-	float speed = 0.005f;
+	float speed = 0.002f;
+
+	std::deque<Enemy> enemies;
 };
 #endif

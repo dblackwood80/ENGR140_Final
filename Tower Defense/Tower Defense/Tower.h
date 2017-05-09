@@ -2,6 +2,7 @@
 #define TOWER_H
 
 #include <vector>
+#include <algorithm>
 //#include "freeglut.h"
 #include "Vector2.h"
 #include "Bullet.h"
@@ -11,7 +12,7 @@
 class Tower
 {
 public:
-	float x, y, radius;
+	float x, y, radius, rangeRadius;
 
 	int cost, damage;
 
@@ -23,6 +24,8 @@ public:
 
 	GLuint texture;
 	Vector2 position, center;
+	
+	std::vector<Bullet> bulletList;
 
 	/*Vector2 velocity = Vector2(0.0f, 0.0f); //Zero
 
@@ -41,13 +44,15 @@ public:
 
 	//std::vector<Enemy> targets;
 	
-	Enemy *targets;
+	//Enemy *targets;
 
 	float angle = 0;
 
 	//Vector2 bullet, bulletVelocity;
 
-	Bullet b;
+	//Bullet b;
+
+	std::deque<Enemy> targs;
 
 public:
 
@@ -57,7 +62,7 @@ public:
 	~Tower();
 	//Tower(GLuint texture, Vector2 posi);
 
-	void init(GLuint texture, Vector2 position, float xx, float yy);
+	void init(GLuint texture, Vector2 position);
 	void Draw();//std::vector<Tower>& tower, std::deque<Enemy> enemies);
 	bool Contains(float x, float y, std::vector<Tower>& tower);
 	Tower ContainsTower(float x, float y, std::vector<Tower>& tower);
@@ -74,15 +79,22 @@ public:
 
 	bool IsInRange(Vector2 position);
 
-	Enemy *Target();
+	//Enemy *Target();
 
-	void GetEnemy(std::deque<Enemy> enemies);
+	void GetEnemy(std::deque<Enemy> &enemies);
+
+	std::deque<Enemy> TowerUps(std::deque<Enemy> towery);
 
 	void RotateToTarget();
 
-	void Updates();
+	void Updates(std::deque<Enemy> &enemies);
 
+	std::deque<Enemy> copy;
 
+	std::deque<Enemy> GetCopy();
+
+	bool valueSwaped;
+	int index, offset;
 };
 
 

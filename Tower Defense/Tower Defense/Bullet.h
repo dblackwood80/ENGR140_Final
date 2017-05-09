@@ -6,6 +6,7 @@
 #include <vector>
 #include <iostream>
 #include "Enemy.h"
+#include "App.h"
 
 class Bullet
 {
@@ -14,19 +15,16 @@ public:
 	Bullet();
 	~Bullet();
 
+	App *a;
+
 	int damage, age;
 	float rotation, speed;
-	Vector2 position, velocity, center, enemypos;
-	Enemy enemies;
-	std::vector<Bullet> bulletVec;
+	Vector2 position, velocity, center;
 	bool IsDead();
-	void init(Vector2 position, float rotation, float speed, int damage, Enemy enemies, Vector2 enemypos);
+	void init(Vector2 position, float rotation, float speed, int damage);//, Enemy enemies, Vector2 enemypos);
 	void Kill();
 	void Updates();
 	void SetRotation(float val);
-
-	void Draw();
-
 };
 
 #endif // !BULLET_H

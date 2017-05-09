@@ -10,9 +10,11 @@
 #include "PlasmaTower.h"
 #include <fstream>
 
-CreateButton button;
+CreateButton button, lev;
 //Enemy enemy1;
 Wave wave;
+Wave wave2;
+int waveNumber;
 //WaveManager waveManager;
 //Tower tower;
 //PlasmaTower tower;
@@ -33,18 +35,19 @@ Level levels(Vector2(-1.0f, 0.98f));
 float xChange = 0, yChange = 0;
 //std::vector<Tower> towerVec;
 std::vector<CreateButton> buttons;
+std::vector<CreateButton> texturedButtons;
 
 bool loopDone = false;
 
 //std::ifstream level;
 
-enum Menu {Main = 0, Options = 1, LevelSelect = 2, Play = 3};
+enum Menu {Main = 0, Options = 1, LevelSelect = 2, Play = 3, HowTo = 4, End = 5};
 
 Menu currentMenu = Main;
 
 float tileWidth = 0.18f, tileHeight = 0.18f;
 //int offsetW = 1, offsetH = 1;
-
+int currentMoney;
 //std::vector<std::vector<int> > map(9, std::vector<int> (11));
 
 App::App(const char* label, int x, int y, int w, int h): GlutApp(label, x, y, w, h){
@@ -52,16 +55,16 @@ App::App(const char* label, int x, int y, int w, int h): GlutApp(label, x, y, w,
     mx = 0.0;
     my = 0.0; 
     
-	#if defined WIN32
     grass = loadTexture("Grass_Normal.bmp");
     path = loadTexture("Path.bmp");
-	enemyTexture1 = loadTexture("Enemy1.bmp");
-	greenTower = loadTexture("Turret_Green.bmp");
-	redTower = loadTexture("Turret_Red.bmp");
-	#else
-	monalisa = loadTexture("monalisa.bmp");
-	wall = loadTexture("wall.bmp");
-	#endif
+	enemyTexture1 = loadTexture("Enemy1_Inverse.bmp");
+	greenTower = loadTexture("Turret_Green_Inverse.bmp");
+	redTower = loadTexture("Turret_Red_Inverse.bmp");
+
+	Level1 = loadTexture("Level_1.bmp");
+	how = loadTexture("HowTo.bmp");
+	howScreen = loadTexture("HowToScreen.bmp");
+	exits = loadTexture("Exit.bmp");
     
     //background = new TexRect(-1, 1, 2, 2);
     scene = new TexRect(-1.0f, 0.98f, 0.18f, 0.18f); //top corner is (-1.0f, 0.98f) not -1, 1 so y goes from .98 to -.98 //.18 used to be .174
@@ -157,7 +160,7 @@ void App::draw() {
 
 	//std::cout << currentMenu << std::endl;
     
-	if (currentMenu == Main)
+	if (currentMenu == End)
 	{
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -216,15 +219,37 @@ void App::draw() {
 		glLoadIdentity();
 
 		glColor3f(0.0f, 0.0f, 0.0f);
-		glRasterPos2f(-0.48f, -0.77f);
-		glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *)"ONE PLAYER");
+		glRasterPos2f(-0.48f, -0.17f);
+		glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *)"LEVEL ONE");
 
-		glRasterPos2f(0.0125f, -0.77f);
-		glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *)"TWO PLAYER");
+		//glRasterPos2f(0.0125f, -0.17f);
+		//glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *)"HOW TO PLAY");
 
-		glColor3f(0.75f, 0.75f, 0.75f);
+		glColor3f(1.0f, 1.0f, 1.0f);
 
-		glBegin(GL_QUADS);
+		buttons.clear();
+		texturedButtons.clear();
+
+		//buttons.push_back(CreateButton(0.0f, 0.0f, 0.4f, 0.1f));
+		//buttons.push_back(CreateButton(-0.5f, 0.0f, 0.4f, 0.1f));
+
+		//button.DrawButton(buttons);
+
+		CreateButton lev(-0.6f, 0.0f, 0.5f, 0.5f, Level1);
+		CreateButton how(0.0f, 0.0f, 0.5f, 0.5f, exits);
+
+		texturedButtons.push_back(lev);
+		texturedButtons.push_back(how);
+
+		//lev.DrawTexturedButton(lev, lev.texture);
+		//how.DrawTexturedButton(how, how.texture);
+
+		for (int w = 0; w < texturedButtons.size(); w++)
+		{
+			texturedButtons.at(w).DrawTexturedButton(texturedButtons.at(w), texturedButtons.at(w).texture);
+		}
+
+		/*glBegin(GL_QUADS);
 
 		glVertex2f(0.0f, 0.0f);
 		glVertex2f(0.4f, 0.0f);
@@ -236,7 +261,38 @@ void App::draw() {
 		glVertex2f(-0.1f, -0.1f);
 		glVertex2f(-0.5f, -0.1f);
 
-		glEnd();
+		glEnd();*/
+	}
+
+	if (currentMenu == Main)
+	{
+		// Clear the screen
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		// Set background color to white
+		glClearColor(1.0, 1.0, 1.0, 1.0);
+
+		// Set up the transformations stack
+		//glMatrixMode(GL_MODELVIEW);
+		//glLoadIdentity();
+
+		glPushMatrix();
+
+		// Set Color
+		glColor3d(1.0, 1.0, 1.0);
+
+		//button.DrawTexturedButton(CreateButton(-1.0f, 0.98f, 1.0f, 1.0f, how), how);
+		CreateButton how(-1.0f, -1.0f, 1.98f, 1.98f, howScreen);
+
+		texturedButtons.clear();
+
+		texturedButtons.push_back(how);
+
+		for (int w = 0; w < texturedButtons.size(); w++)
+		{
+			texturedButtons.at(w).DrawTexturedButton(texturedButtons.at(w), texturedButtons.at(w).texture);
+		}
+
 	}
 
 	if (currentMenu == Play)
@@ -256,20 +312,6 @@ void App::draw() {
 
 		// Set Color
 		glColor3d(1.0, 1.0, 1.0);
-		
-
-		a.y += 0.01f;
-
-		if (a.y != 0.98f)
-		{
-			glPointSize(10);
-			glBegin(GL_POINTS);
-
-			glVertex2f(a.x, a.y);
-
-			glEnd();
-		}
-
 		
 		player.Draw();
 		//tower.Draw();// towerVec, wave.Enemies());
@@ -292,7 +334,17 @@ void App::draw() {
 		buttons.clear();
 		button.DrawButton(buttons);
 
-		store.Draw(wave.player.money, selectedTower.center.X, selectedTower.center.Y, selectedTower.radius);
+		if (waveNumber == 1)
+		{
+			store.Draw(wave.player.money, selectedTower.center.X, selectedTower.center.Y, selectedTower.rangeRadius);
+		}
+
+		if (waveNumber == 2)
+		{
+			store.Draw(wave2.player.money, selectedTower.center.X, selectedTower.center.Y, selectedTower.rangeRadius);
+		}
+
+
 		//std::cout << "SELECT: " << selectedTower.center.X << selectedTower.center.Y << std::endl;
 		//std::cout << wave.player.money << std::endl;
 		
@@ -300,7 +352,17 @@ void App::draw() {
 
 		//if (wave.Enemies().size() > 0)
 		//{
+		if (waveNumber == 1)
+		{
 			wave.DrawWaves();
+		}
+
+		if (waveNumber == 2)
+		{
+			wave2.DrawWaves();
+		}
+
+			
 			//waveManager.DrawAllWaves();
 			//enemy1.drawEnemy();
 			/*if (yChange < 0.535f)
@@ -358,7 +420,7 @@ void App::draw() {
 				if (levels.map[yTile - 1][xTile - 1] == 0) //if grass
 				{
 					//std::cout << map[yTile - 1][xTile - 1] << ", " << tileWidth * xTile << ", " << tileHeight * yTile << std::endl;
-					glBindTexture(GL_TEXTURE_2D, grass);
+					glBindTexture(GL_TEXTURE_2D, path);
 					scene->draw(tileWidth * xTile, tileHeight * yTile);
 					//offsetH++;
 					//glDisable(GL_TEXTURE_2D);
@@ -367,7 +429,7 @@ void App::draw() {
 				{
 					//std::cout << map[yTile - 1][xTile - 1] << ", " << map[yTile - 1][xTile - 1] << std::endl;
 					//std::cout << map[yTile - 1][xTile - 1] << ", " << tileWidth * xTile << ", " << tileHeight * yTile << std::endl;
-					glBindTexture(GL_TEXTURE_2D, path);
+					glBindTexture(GL_TEXTURE_2D, grass);
 					scene->draw(tileWidth * xTile, tileHeight * yTile);
 					//offsetH++;
 					//glDisable(GL_TEXTURE_2D);
@@ -410,37 +472,52 @@ void App::idle()
 	
 	if (currentMenu == Play)
 	{
-		wave.Updates();
-
-		//if (  /*!(tower.targets.alive) && wave.Enemies().size() > 0 && player.towers.size() > 0*/)
-		//{
-
-			//std::cout << "INSIDE: " << wave.Enemies().front().position.X << std::endl;
-			std::vector<Enemy> enemies;
-			for (int p = 0; p < wave.Enemies().size(); p++)
-			{
-				enemies.push_back(wave.Enemies().at(p));
-				//tower.stuff.push_back(enemies.at(p));
-			}
-			//tower.GetEnemy(wave.Enemies());
-			player.Updates(wave.Enemies());
-			//tower.Updates();
-			//std::cout <<"SIZE: " << enemies.size() << ", " << enemies.at(0).position.X + tower.center.X << std::endl;
-		//}
-
-		//waveManager.Updates();
-
-		//enemy1.Updates();
-		
-
-		/*if (tower.Target().center.X == NULL && nodes == 0)
+	waveNumber = wave.wavesCount;
+		if (waveNumber == 1)
 		{
-			nodes++;
-			std::vector<Enemy> enemies;
-			enemies.push_back(enemy1);
-			tower.GetEnemy(enemies);
-		}*/
+			if (wave.player.lives <= 0)
+			{
+				exit(0);
+			}
 
+			for (int t = 0; t < player.towers.size(); t++)
+			{
+				for (int j = 0; j < wave.enemies.size(); j++)
+				{
+					wave.enemies.at(j).center.X = wave.enemies.at(j).position.X + 0.09f;
+					wave.enemies.at(j).center.Y = wave.enemies.at(j).position.Y - 0.09f;
+				}
+					player.towers.at(t).GetEnemy(wave.enemies);
+					player.towers.at(t).Updates(wave.enemies);
+			}
+
+			wave.Updates();
+		}
+		
+		if (waveNumber == 2)
+		{
+			if (wave2.player.lives <= 0)
+			{
+				exit(0);
+			}
+
+			for (int t = 0; t < player.towers.size(); t++)
+			{
+				for (int j = 0; j < wave2.enemies.size(); j++)
+				{
+					wave2.enemies.at(j).center.X = wave2.enemies.at(j).position.X + 0.09f;
+					wave2.enemies.at(j).center.Y = wave2.enemies.at(j).position.Y - 0.09f;
+				}
+				player.towers.at(t).GetEnemy(wave2.enemies);
+				player.towers.at(t).Updates(wave2.enemies);
+			}
+
+			wave2.Updates();
+		}
+
+
+		
+		
 		/*if (enemy1.currentHealth > 0)
 		{
 			float healthPercentage = (float)enemy1.currentHealth / (float)enemy1.startHealth;
@@ -459,73 +536,228 @@ void App::mouseDown(float x, float y){ //Left click button down
 
 	if (currentMenu == Play)
 	{
-		if (store.startWave.Contains(mx, my, store.startButtons))
+
+		if (waveNumber == 1 || waveNumber == 0)
 		{
-			wave.init(0, 5, player, levels, enemyTexture1);
-			wave.Start();
-			player.init(levels, greenTower);
-			store.init(wave);
-			store.waveStarted = true;
+			currentMoney = wave.player.money;
+			if (store.startWave.Contains(mx, my, store.startButtons))
+			{
+				wave.init(0, 5, player, levels, enemyTexture1);
+				wave.Start();
+				player.init(levels, greenTower);
+				store.init(wave);
+				store.waveStarted = true;
+				wave.player.money = currentMoney;
+			}
 		}
+
+		if (waveNumber == 2)
+		{
+			currentMoney = wave2.player.money;
+			if (store.startWave.Contains(mx, my, store.startButtons))
+			{
+				wave2.init(0, 8, player, levels, enemyTexture1);
+				wave2.Start();
+				player.init(levels, greenTower);
+				store.init(wave2);
+				store.waveStarted = true;
+				wave2.player.money = currentMoney;
+			}
+		}
+
+		
 		
 		if (player.InBounds(my))
 		{
 			store.showStats = false;
 		}
 
-		if (store.upgrade.Contains(mx, my, store.upgradeButtons) && wave.player.money >= 5 && selectedTower.upgradeLevel < 1)
-		{
-			wave.player.money -= 10;
-			selectedTower.texture = redTower;
-			selectedTower.upgradeLevel += 1;
 
-			for (int t = 0; t < player.towers.size(); t++)
+		if (waveNumber == 1)
+		{
+			if (store.upgrade.Contains(mx, my, store.upgradeButtons) && wave.player.money >= 5 && selectedTower.upgradeLevel < 1)
 			{
-				if (player.towers.at(t).position.X == selectedTower.position.X && player.towers.at(t).position.Y == selectedTower.position.Y)
+				wave.player.money -= 10;
+				selectedTower.texture = redTower;
+				selectedTower.damage += 3;
+				selectedTower.upgradeLevel += 1;
+
+				for (int t = 0; t < player.towers.size(); t++)
 				{
-					player.towers.at(t) = selectedTower;
+					if (player.towers.at(t).position.X == selectedTower.position.X && player.towers.at(t).position.Y == selectedTower.position.Y)
+					{
+						player.towers.at(t) = selectedTower;
+					}
 				}
+				std::cout << "LEVEL: " << selectedTower.upgradeLevel << std::endl;
+				std::cout << "UPGRADED: " << selectedTower.position.X << std::endl;
 			}
-			std::cout << "LEVEL: " << selectedTower.upgradeLevel << std::endl;
-			std::cout << "UPGRADED: " << selectedTower.position.X << std::endl;
-		} 
-		else if (store.upgrade.Contains(mx, my, store.upgradeButtons) && wave.player.money >= 5 && selectedTower.upgradeLevel == 1)
-		{
-			wave.player.money -= 20;
-			selectedTower.upgradeLevel += 1;
-			selectedTower.radius += 0.1f;
-
-			for (int t = 0; t < player.towers.size(); t++)
+			else if (store.upgrade.Contains(mx, my, store.upgradeButtons) && wave.player.money >= 5 && selectedTower.upgradeLevel == 1)
 			{
-				if (player.towers.at(t).position.X == selectedTower.position.X && player.towers.at(t).position.Y == selectedTower.position.Y)
+				wave.player.money -= 20;
+				selectedTower.upgradeLevel += 1;
+				selectedTower.radius += 0.1f;
+				selectedTower.rangeRadius = selectedTower.radius + 0.05f;
+
+				for (int t = 0; t < player.towers.size(); t++)
 				{
-					player.towers.at(t) = selectedTower;
+					if (player.towers.at(t).position.X == selectedTower.position.X && player.towers.at(t).position.Y == selectedTower.position.Y)
+					{
+						player.towers.at(t) = selectedTower;
+					}
 				}
 			}
 		}
+
+		if (waveNumber == 2)
+		{
+			if (store.upgrade.Contains(mx, my, store.upgradeButtons) && wave2.player.money >= 5 && selectedTower.upgradeLevel < 1)
+			{
+				wave2.player.money -= 10;
+				selectedTower.texture = redTower;
+				selectedTower.damage += 3;
+				selectedTower.upgradeLevel += 1;
+
+				for (int t = 0; t < player.towers.size(); t++)
+				{
+					if (player.towers.at(t).position.X == selectedTower.position.X && player.towers.at(t).position.Y == selectedTower.position.Y)
+					{
+						player.towers.at(t) = selectedTower;
+					}
+				}
+				std::cout << "LEVEL: " << selectedTower.upgradeLevel << std::endl;
+				std::cout << "UPGRADED: " << selectedTower.position.X << std::endl;
+			}
+			else if (store.upgrade.Contains(mx, my, store.upgradeButtons) && wave2.player.money >= 5 && selectedTower.upgradeLevel == 1)
+			{
+				wave2.player.money -= 20;
+				selectedTower.upgradeLevel += 1;
+				selectedTower.radius += 0.1f;
+				selectedTower.rangeRadius = selectedTower.radius + 0.05f;
+
+				for (int t = 0; t < player.towers.size(); t++)
+				{
+					if (player.towers.at(t).position.X == selectedTower.position.X && player.towers.at(t).position.Y == selectedTower.position.Y)
+					{
+						player.towers.at(t) = selectedTower;
+					}
+				}
+			}
+		}
+
+		
 	}
 
 
-	if (currentMenu == Play && player.InBounds(y) && !(player.Contains(mx, my)) && player.towers.size() > 0 && !(levels.CheckPlacement(mx, my, levels.AllPathPoints())) && wave.player.money >= 10)
+	if (currentMenu == Play && player.InBounds(y) && !(player.Contains(mx, my)) && player.towers.size() > 0 && !(levels.CheckPlacement(mx, my, levels.AllPathPoints())) && wave.player.money >= 10 && !store.waveStarted)
 	{
-		wave.player.money -= 10;
-		std::cout << "Push 1" << std::endl;
-		//towerVec.push_back(Tower(greenTower, Vector2(0.0f, 0.0f)));
-		Tower push;
-		push.init(greenTower, Vector2(mx, my), mx, my);
-		//towerVec.push_back(push);
-		player.towers.push_back(push);
-		player.Updates(wave.Enemies());
+
+		if (waveNumber == 1)
+		{
+			wave.player.money -= 10;
+			std::cout << "Push 1" << std::endl;
+			//towerVec.push_back(Tower(greenTower, Vector2(0.0f, 0.0f)));
+			Tower push;
+			push.init(greenTower, Vector2(mx, my));// , mx, my);
+												   //towerVec.push_back(push);
+			player.towers.push_back(push);
+
+			for (int t = 0; t < player.towers.size(); t++)
+			{
+				for (int j = 0; j < wave.enemies.size(); j++)
+				{
+					wave.enemies.at(j).center.X = wave.enemies.at(j).position.X + 0.09f;
+					wave.enemies.at(j).center.Y = wave.enemies.at(j).position.Y - 0.09f;
+				}
+
+				player.towers.at(t).GetEnemy(player.towers.at(0).copy);
+				player.towers.at(t).Updates(player.towers.at(0).copy);
+			}
+			std::cout << "SIZER1: " << player.towers.size() << std::endl;
+			//player.Updates(wave.enemies);
+		}
+
+		if (waveNumber == 2)
+		{
+			wave2.player.money -= 10;
+			std::cout << "Push 1" << std::endl;
+			//towerVec.push_back(Tower(greenTower, Vector2(0.0f, 0.0f)));
+			Tower push;
+			push.init(greenTower, Vector2(mx, my));// , mx, my);
+												   //towerVec.push_back(push);
+			player.towers.push_back(push);
+
+			for (int t = 0; t < player.towers.size(); t++)
+			{
+				for (int j = 0; j < wave2.enemies.size(); j++)
+				{
+					wave2.enemies.at(j).center.X = wave2.enemies.at(j).position.X + 0.09f;
+					wave2.enemies.at(j).center.Y = wave2.enemies.at(j).position.Y - 0.09f;
+				}
+
+				player.towers.at(t).GetEnemy(player.towers.at(0).copy);
+				player.towers.at(t).Updates(player.towers.at(0).copy);
+			}
+			std::cout << "SIZER1: " << player.towers.size() << std::endl;
+			//player.Updates(wave2.enemies);
+		}
+
+
+		
 	}
-	else if(currentMenu == Play && player.InBounds(y) && player.towers.size() <= 0 && !(levels.CheckPlacement(mx, my, levels.AllPathPoints())) && wave.player.money >= 10)
+	else if(currentMenu == Play && player.InBounds(y) && player.towers.size() <= 0 && !(levels.CheckPlacement(mx, my, levels.AllPathPoints())) && wave.player.money >= 10 && !store.waveStarted)
 	{		
-		wave.player.money -= 10;
-		std::cout << "Push 2" << std::endl;
-		Tower push;
-		push.init(greenTower, Vector2(mx, my), mx, my);
-		//towerVec.push_back(push);
-		player.towers.push_back(push);
-		player.Updates(wave.Enemies());
+
+		if (waveNumber == 1)
+		{
+			wave.player.money -= 10;
+			std::cout << "Push 2" << std::endl;
+			Tower push;
+			push.init(greenTower, Vector2(mx, my));// , mx, my);
+												   //towerVec.push_back(push);
+			player.towers.push_back(push);
+
+			for (int t = 0; t < player.towers.size(); t++)
+			{
+				for (int j = 0; j < wave.enemies.size(); j++)
+				{
+					wave.enemies.at(j).center.X = wave.enemies.at(j).position.X + 0.09f;
+					wave.enemies.at(j).center.Y = wave.enemies.at(j).position.Y - 0.09f;
+				}
+
+				player.towers.at(t).GetEnemy(wave.enemies);
+				player.towers.at(t).Updates(wave.enemies);
+			}
+			std::cout << "SIZER2: " << player.towers.size() << std::endl;
+			//player.Updates(wave.enemies);
+		}
+
+		if (waveNumber == 2)
+		{
+
+			wave2.player.money -= 10;
+			std::cout << "Push 2" << std::endl;
+			Tower push;
+			push.init(greenTower, Vector2(mx, my));// , mx, my);
+												   //towerVec.push_back(push);
+			player.towers.push_back(push);
+
+			for (int t = 0; t < player.towers.size(); t++)
+			{
+				for (int j = 0; j < wave2.enemies.size(); j++)
+				{
+					wave2.enemies.at(j).center.X = wave2.enemies.at(j).position.X + 0.09f;
+					wave2.enemies.at(j).center.Y = wave2.enemies.at(j).position.Y - 0.09f;
+				}
+
+				player.towers.at(t).GetEnemy(wave2.enemies);
+				player.towers.at(t).Updates(wave2.enemies);
+			}
+			std::cout << "SIZER2: " << player.towers.size() << std::endl;
+			//player.Updates(wave2.enemies);
+		}
+
+
 	}
 	else if (currentMenu == Play && player.InBounds(y) && player.Contains(mx, my) && player.towers.size() > 0)
 	{
@@ -545,10 +777,21 @@ void App::mouseUp(float x, float y) //Left click button up
 	mx = x;
 	my = y;
 
-	if (button.Contains(x, y, buttons) && currentMenu == Main)
+	if (currentMenu == Main)
 	{
-		currentMenu = Play;
+		currentMenu = Options;
 		initializeLevel("Level1.txt");
+	}
+
+	if (button.ContainsTexture(x, y, texturedButtons) == Level1 && currentMenu == Options)
+	{
+		std::cout << "HI" << std::endl;
+		currentMenu = Play;
+	}
+	else if(button.ContainsTexture(x, y, texturedButtons) == exits && currentMenu == Options)
+	{
+		std::cout << "HOW" << std::endl;
+		exit(0);
 	}
 
 	redraw();
@@ -571,6 +814,12 @@ void App::keyPress(unsigned char key) {
 
 	if (key == 32)
 	{
+		player.towers.at(0).angle -= 1;
+		if (player.towers.at(0).angle == -360 || player.towers.at(0).angle == 360)
+		{
+			player.towers.at(0).angle = 0;
+		}
+
 		//std::cout << tower.angle << std::endl;
 		if (yChange < 0.535f)
 		{
@@ -592,5 +841,14 @@ void App::keyPress(unsigned char key) {
 		redraw();
 		//std::cout << "doing " << xChange << ", " << yChange << std::endl;
 		redraw();
+	}
+
+	if (key == 97)
+	{
+		player.towers.at(0).angle += 1;
+		if (player.towers.at(0).angle == -360 || player.towers.at(0).angle == 360)
+		{
+			player.towers.at(0).angle = 0;
+		}
 	}
 }
